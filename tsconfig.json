@@ -4,10 +4,10 @@
     "paths": {
       "@/*": ["./*"]
     },
-    "moduleResolution": "node16",
-    "module": "node16",
-    "allowImportingTsExtensions": true,
+    "module": "es2020",
+    "moduleResolution": "Node",
+    /*"allowImportingTsExtensions": true,
     "emitDeclarationOnly": true,
-    "declaration": true
+    "declaration": true*/
   }
 }

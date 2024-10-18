@@ -9,7 +9,7 @@ export const authClient = axios.create({
     withXSRFToken: true,
 })
 
-const authStore = useAuthStore()
+//const authStore = useAuthStore()
 authClient.interceptors.response.use(
     (response) => {
         return response
@@ -17,14 +17,14 @@ authClient.interceptors.response.use(
     function(error) {
         if (
             error.response &&
-            [401, 419].includes(error.response.status) &&
+            [401, 419].includes(error.response.status) //&&
             //store.getters['auth/authUser'] &&
-            authStore.authUser &&
+            //authStore.authUser &&
             //!store.getters['auth/guest']
-            !authStore.guest
+            //!authStore.guest
         ) {
             //store.dispatch('auth/logout')
-            authStore.logoutFunction()
+            //authStore.logoutFunction()
         }
         return Promise.reject(error)
     }

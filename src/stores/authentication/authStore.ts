@@ -73,7 +73,11 @@ export const useAuthStore = defineStore('auth', () => {
 
     }
 
-    const setGuest = (value: string) => {
+    const updateUserLoadingState = (value: boolean) => {
+        userLoading.value = value
+    }
+
+    const setGuest = (value: any) => {
         window.localStorage.setItem('guest', value)
     }
 
@@ -82,7 +86,9 @@ export const useAuthStore = defineStore('auth', () => {
         userLoading,
         guest,
         logoutFunction,
-        getAuthUserFunction
+        getAuthUserFunction,
+        updateUserLoadingState,
+        setGuest
     }
 
 })

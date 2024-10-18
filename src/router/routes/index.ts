@@ -5,7 +5,7 @@ import ResetPassword from "@/components/authentication/ResetPassword.vue";
 import NotFoundPage from "@/views/errors/NOTFOUND/NotFoundPage.vue";
 import UnauthorizedPage from "@/views/errors/UNAUTHORIZED/UnauthorizedPage.vue";
 
-const routes: any = [
+const routesObject: any = [
     {
         path: '/',
         component: DefaultLayout,
@@ -52,4 +52,4 @@ const routes: any = [
         component: NotFoundPage,
     },
 ]
-export default routes
+export default routesObject
