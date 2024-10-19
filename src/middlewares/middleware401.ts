@@ -4,15 +4,14 @@ import {useAuthStore} from "@/stores/authentication/authStore.ts";
  * Middleware - if user lost authentication (401) it gets kicked out
  * FROM https://youtu.be/BWNcuB3LQz8?t=1119
  */
-const middleware401 = async error => {
+const middleware401 = async (error: any) => {
     const { status } = error.request
     if (status === 401 || status === 419) {
-        const authStore = useAuthStore()
-
-        setTimeout(async () => await authStore.logout(), 3000)
+        const auth = useAuthStore()
+        setTimeout(async () => await auth.logoutFunction(), 3000)
         return Promise.reject({
-            name: 'Permiso Denegado',
-            message: 'Tu sesión ha expirado, te enviaremos al inicio de sesión',
+            name: 'Permission denied',
+            message: 'You lost your credentials - will be redirected to login page.',
         })
     }
     return Promise.reject(error)

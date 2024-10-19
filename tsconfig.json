@@ -6,8 +6,7 @@
     },
     "module": "es2020",
     "moduleResolution": "Node",
-    /*"allowImportingTsExtensions": true,
-    "emitDeclarationOnly": true,
-    "declaration": true*/
+    "allowImportingTsExtensions": true,
+    "allowSyntheticDefaultImports": true
   }
 }

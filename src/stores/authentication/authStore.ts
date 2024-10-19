@@ -1,94 +1,71 @@
 import {defineStore} from "pinia";
-import {computed, ref} from "vue";
-import AuthService from "@/services/authentication/Auth.service.ts";
+/** Importing router */
 import {useRouter} from "vue-router";
+/** Importing stores */
+import {useUserStore} from "@/stores/authentication/userStore.ts";
 
-export const useAuthStore = defineStore('auth', () => {
+/** Importing services */
+import {useApi} from "@/services/index.ts";
+/** Importing interfaces */
+import {ILoginParams} from "@/utils/interfaces/authentication/authentication.ts";
 
-    const route = useRouter()
+const api = useApi()
 
-    const user = ref(null)
-    const passwordExpired = ref<boolean | undefined>(false)
-    const userLoading = ref<boolean | undefined>(false)
-    const errors = ref<object | string | null>(null)
-    const permissions = ref([])
-    const loggingOut = ref<boolean | undefined>(false)
+export const useAuthStore = defineStore('auth', {
+    state: () =>
+        JSON.parse(localStorage.getItem('AUTH_STATE')) ?? {
+            email: null,
+            isLoggedIn: false
+        },
+    actions: {
+        updateState(payload: any) {
+            let newUserState = {...this.$state, ...payload}
+            localStorage.removeItem('AUTH_STATE')
+            localStorage.setItem('AUTH_STATE', JSON.stringify(newUserState))
+            this.$reset()
+        },
+        async loginFunction(params: ILoginParams) {
+            const {email, password} = params
+            const user = useUserStore()
 
-    const authUser = computed(() => user.value)
-    const isAdmin = computed(() => !!(user.value && user.value.roles[0].id === 1))
-    const pwExpired = computed(() => passwordExpired.value)
-    const user_loading = computed(() => userLoading.value)
-    const error = computed(() => errors.value)
-    const loggedIn = computed(() => !!user.value)
-    const logging_out = computed(() => loggingOut.value)
-    const guest = computed(() => {
-        const storageItem = window.localStorage.getItem('guest')
-        if (!storageItem) return false
-        if (storageItem === 'isGuest') return true
-        if (storageItem === 'isNotGuest') return false
-        return null
-    })
-    const can = computed((permission) => {
-        permissions.value.find(todo => todo.name === permission)
-    })
+            try {
 
-    const logoutFunction = async () => {
-        loggingOut.value = true
-        try {
-            await AuthService.logout()
-            user.value = null
-            setGuest('isGuest')
-            window.localStorage.clear()
-            loggingOut.value = false
-            if (route.currentRoute.value.name !== 'login') {
-                await route.push({name: 'auth'})
+                await api.post('/login', {email, password})
+                this.updateState({email, isLoggedIn: true})
+                await user.storeInfo()
+
+            } catch (error) {
+                console.error('Error al iniciar sesión', error)
             }
-        } catch (error) {
-            loggingOut.value = false
-            error.value = error
+        },
+        async forgotPasswordFunction({email}: { email: string }) {
+            try {
+                await api.post('/forgot-password', {email})
+            } catch (error) {
+                console.error('Error al enviar el correo de recuperación: ', error.message)
+                throw error
+            }
+        },
+        async logoutFunction() {
+            const user = useUserStore()
+            const router = useRouter()
+            localStorage.clear()
+            this.$reset()
+            user.$reset()
+
+            try {
+                await api.post('/logout')
+                await router.push({
+                    name: 'login',
+                    params: {
+                        message: 'Sesión finalizada'
+                    }
+                })
+            } catch (error) {
+                console.error('Error al cerrar sesión: ', error.message)
+                throw error
+            }
         }
-    }
-
-    const getAuthUserFunction = async () => {
-        userLoading.value = true
-        passwordExpired.value = false
-
-        try {
-
-            const dateCurrent = new Date()
-            const today = dateCurrent.getFullYear() + '-' + String(dateCurrent.getMonth() + 1).padStart(2, '0') + '-' + dateCurrent.getDate()
-
-            const response = await AuthService.getAuthUser()
-            if (response.data.passwordExpirationDate >= today) passwordExpired.value = true
-            user.value = response.data
-            userLoading.value = false
-
-            return response.data
-
-        } catch (e) {
-            userLoading.value = false
-            user.value = null
-            errors.value = e
-        }
-
-    }
-
-    const updateUserLoadingState = (value: boolean) => {
-        userLoading.value = value
-    }
-
-    const setGuest = (value: any) => {
-        window.localStorage.setItem('guest', value)
-    }
-
-    return {
-        authUser,
-        userLoading,
-        guest,
-        logoutFunction,
-        getAuthUserFunction,
-        updateUserLoadingState,
-        setGuest
     }
 
 })

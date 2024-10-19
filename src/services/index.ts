@@ -1,19 +1,22 @@
 import axios from "axios";
-import middleware401 from "@/middlewares/middleware401.ts";
 import middlewareCSFR from "@/middlewares/middlewareCSRF.ts";
+import middleware401 from "@/middlewares/middleware401.ts";
 
-export const apiClient = (endpoint = 'api') => {
+export const useApi = () => {
 
     const {VITE_NODE_ENV, VITE_BASE_URL, VITE_BASE_URL__P} = import.meta.env
 
     const axiosInstance = axios.create({
         baseURL: VITE_NODE_ENV === 'development' ? VITE_BASE_URL : VITE_BASE_URL__P,
         headers: {
-            'X-Requested-With': 'XMLHttpRequest'
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
         },
-        withXSRFToken: true,
-        withCredentials: true
+        withCredentials: true,
+        withXSRFToken: true
     })
+
+    console.log(import.meta.env.VITE_NODE_ENV)
 
     axiosInstance.interceptors.request.use(middlewareCSFR, error => Promise.reject(error))
     axiosInstance.interceptors.response.use(resp => resp, middleware401)
