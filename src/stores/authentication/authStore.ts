@@ -49,21 +49,15 @@ export const useAuthStore = defineStore('auth', {
         async logoutFunction() {
             const user = useUserStore()
             const router = useRouter()
-            localStorage.clear()
+            localStorage.clear() // always clean localStorage before reset the state
             this.$reset()
             user.$reset()
 
             try {
                 await api.post('/logout')
-                await router.push({
-                    name: 'login',
-                    params: {
-                        message: 'Sesión finalizada'
-                    }
-                })
+                await router.push({name: 'login'})
             } catch (error) {
-                console.error('Error al cerrar sesión: ', error.message)
-                throw error
+                window.location.pathname = '/'
             }
         }
     }

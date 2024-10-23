@@ -7,8 +7,14 @@ import {
   CDropdownToggle
 } from "@coreui/vue/dist/esm/components/dropdown";
 import {CAvatar} from "@coreui/vue/dist/esm/components/avatar";
-
 import avatar from '@/assets/images/avatars/2.jpg'
+import {useAuthStore} from "@/stores/authentication/authStore.ts";
+
+const auth = useAuthStore()
+const logoutFn = async () => {
+  await auth.logoutFunction()
+}
+
 </script>
 
 <template>
@@ -18,7 +24,7 @@ import avatar from '@/assets/images/avatars/2.jpg'
       <CAvatar class="ms-2" :src="avatar" size="md" status="success"/>
     </CDropdownToggle>
     <CDropdownMenu class="pt-0">
-      <CDropdownHeader
+<!--      <CDropdownHeader
           as="h6"
           class="bg-body-secondary text-body-secondary fw-semibold rounded-top mb-2"
       >
@@ -39,12 +45,12 @@ import avatar from '@/assets/images/avatars/2.jpg'
       <CDropdownItem>
         <CIcon icon="cil-comment-square"/>
         comments
-      </CDropdownItem>
+      </CDropdownItem>-->
 
       <!-- Settings and Profile Section -->
       <CDropdownHeader
           as="h6"
-          class="bg-body-secondary text-body-secondary fw-semibold my-2"
+          class="bg-body-secondary text-body-secondary fw-semibold rounded-top mb-2"
       >
         settings
       </CDropdownHeader>
@@ -58,7 +64,7 @@ import avatar from '@/assets/images/avatars/2.jpg'
       </CDropdownItem>
       <!-- End Settings and Profile Section -->
       <CDropdownDivider/>
-      <CDropdownItem>
+      <CDropdownItem @click="logoutFn">
         <CIcon icon="cil-lock-locked"/>
         logout
       </CDropdownItem>

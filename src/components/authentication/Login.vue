@@ -12,7 +12,7 @@ import {useRouter} from "vue-router";
 const router = useRouter()
 
 /* Using auth Store */
-const store = useAuthStore()
+const auth = useAuthStore()
 
 /* Importing environment variables */
 const appData = reactive({
@@ -20,7 +20,7 @@ const appData = reactive({
   app_version_date: import.meta.env.VITE_APP_VERSION_DATE,
 })
 
-const formData = reactive({
+const credentials = reactive({
   email: '',
   password: ''
 })
@@ -29,7 +29,7 @@ const errors = ref(null)
 
 const loginFormFunction = async () => {
   try {
-    await store.loginFunction(formData)
+    await auth.loginFunction(credentials)
   } catch(error) {
     errors.value = error
     console.error(error)
@@ -54,7 +54,7 @@ const loginFormFunction = async () => {
                 autofocus
                 placeholder="Usuario o Email"
                 autocomplete="username"
-                v-model="formData.email"
+                v-model="credentials.email"
             />
           </CInputGroup>
           <CInputGroup class="mb-4">
@@ -65,7 +65,7 @@ const loginFormFunction = async () => {
                 type="password"
                 placeholder="Contraseña"
                 autocomplete="current-password"
-                v-model="formData.password"
+                v-model="credentials.password"
             />
           </CInputGroup>
           <CRow>

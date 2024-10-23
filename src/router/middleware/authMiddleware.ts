@@ -1,15 +1,15 @@
 import {useAuthStore} from "@/stores/authentication/authStore.ts";
 
 export default (to, from, next) => {
-    const authStore= useAuthStore()
+    const auth = useAuthStore()
 
-    let exceptionalRoutes = ['login', 'reset-password']
+    let exceptionalRoutes = ['login', 'register', 'forgot-password']
     let isGoingExceptionalRoutes = exceptionalRoutes.includes(to.name)
 
     /**
      * IF THE USER IS NOT LOGGED IN
      */
-    if (!authStore.loggedIn) {
+    if (!auth.isLoggedIn) {
         if (isGoingExceptionalRoutes) {
             next() // The user is not logged in but it's going to exceptional routes ? fine
             return
@@ -22,10 +22,9 @@ export default (to, from, next) => {
     /**
      * IF THE USER IS LOGGED IN
      */
-    if (authStore.loggedIn && isGoingExceptionalRoutes) {
-        next({ name: 'home', query: { 'redirect-reason': 'already logged' } })
+    if (auth.isLoggedIn && isGoingExceptionalRoutes) {
+        next({ name: 'dashboard', query: { 'redirect-reason': 'already logged' } })
     } else {
         next()
     }
-
 }

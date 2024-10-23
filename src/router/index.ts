@@ -3,7 +3,7 @@ import routesObject from "./routes";
 import authMiddleware from "./middleware/authMiddleware.ts";
 
 const router = createRouter({
-    history: createWebHashHistory(import.meta.env.BASE_URL),
+    history: createWebHashHistory(import.meta.env.VITE_BASE_URL),
     routes: routesObject,
     strict: true,
     scrollBehavior() {

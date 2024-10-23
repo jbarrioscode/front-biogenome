@@ -1,5 +1,5 @@
 import axios from "axios";
-import middlewareCSFR from "@/middlewares/middlewareCSRF.ts";
+import middlewareCSRF from "@/middlewares/middlewareCSRF.ts";
 import middleware401 from "@/middlewares/middleware401.ts";
 
 export const useApi = () => {
@@ -9,16 +9,18 @@ export const useApi = () => {
     const axiosInstance = axios.create({
         baseURL: VITE_NODE_ENV === 'development' ? VITE_BASE_URL : VITE_BASE_URL__P,
         headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'Accept': 'application/json'
+            common: {
+                'X-Requested-With': 'XMLHttpRequest',
+            },
         },
         withCredentials: true,
         withXSRFToken: true
     })
 
-    console.log(import.meta.env.VITE_NODE_ENV)
+    console.log(VITE_NODE_ENV)
+    console.log(VITE_BASE_URL)
 
-    axiosInstance.interceptors.request.use(middlewareCSFR, error => Promise.reject(error))
+    axiosInstance.interceptors.request.use( middlewareCSRF, err => Promise.reject(err))
     axiosInstance.interceptors.response.use(resp => resp, middleware401)
 
     return axiosInstance
