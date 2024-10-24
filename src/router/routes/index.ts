@@ -4,6 +4,10 @@ import Login from "@/components/authentication/Login.vue";
 import ResetPassword from "@/components/authentication/ResetPassword.vue";
 import NotFoundPage from "@/views/errors/NOTFOUND/NotFoundPage.vue";
 import UnauthorizedPage from "@/views/errors/UNAUTHORIZED/UnauthorizedPage.vue";
+import PatientMainComponent from "@/components/patients/PatientMainComponent.vue";
+import ReportsMainComponent from "@/components/reports/ReportsMainComponent.vue";
+import SamplesMainComponent from "@/components/samples/SamplesMainComponent.vue";
+import SettingsMainComponent from "@/components/settings/SettingsMainComponent.vue";
 
 const routesObject: any = [
     {
@@ -40,6 +44,28 @@ const routesObject: any = [
         path: '/dashboard',
         name: 'dashboard',
         component: DefaultLayout,
+        children: [
+            {
+                path: '/patients',
+                name: 'patients',
+                component: PatientMainComponent,
+            },
+            {
+                path: '/samples',
+                name: 'samples',
+                component: SamplesMainComponent,
+            },
+            {
+                path: '/reports',
+                name: 'reports',
+                component: ReportsMainComponent,
+            },
+            {
+                path: '/settings',
+                name: 'settings',
+                component: SettingsMainComponent,
+            },
+        ]
     },
     {
         path: "/unauthorized",
