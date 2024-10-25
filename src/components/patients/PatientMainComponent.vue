@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
-import PatientComponentMenu from "@/components/patients/subComponents/patientComponentMenu.vue";
+import PatientComponentMenu from "@/components/patients/subComponents/PatientMenuComponent/PatientMenuComponent.vue";
+import PatientTableComponent from "@/components/patients/subComponents/PatientTableComponent/PatientTableComponent.vue";
 </script>
 
 <template>
@@ -16,7 +17,7 @@ import PatientComponentMenu from "@/components/patients/subComponents/patientCom
 
     <div class="row">
       <div class="col">
-        <p>Tabla</p>
+        <PatientTableComponent />
       </div>
       <!-- /.col -->
     </div>

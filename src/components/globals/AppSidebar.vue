@@ -38,7 +38,7 @@ function redirectToViews(view: string) {
         }
       "
   >
-    <CSidebarHeader class="bg-primary">
+    <CSidebarHeader style="background: #252f56 !important;">
       <RouterLink to="/" v-slot="{href, navigate}">
         <CSidebarBrand v-bind="$attrs" as="a" :href="href" @click="navigate">
           <CIcon custom-class-name="sidebar-brand-full" :icon="logo" :height="32"/>

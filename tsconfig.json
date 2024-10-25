@@ -7,6 +7,9 @@
     "module": "es2020",
     "moduleResolution": "Node",
     "allowImportingTsExtensions": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "types": [
+      "vue-sweetalert2"
+    ]
   }
 }

@@ -22,7 +22,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <CHeader position="sticky" :class="headerClassNames">
+  <CHeader position="sticky" :class="headerClassNames" style="background: #252f56 !important; ">
     <CContainer class="px-4" fluid>
       <CHeaderToggler
           :class="['d-lg-none', { 'prevent-hide': !sidebar.visible }]"
