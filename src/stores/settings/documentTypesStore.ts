@@ -17,10 +17,12 @@ export const useDocumentTypesStore = defineStore('documentTypes', {
             this.isLoadingDocumentTypes = true
             this.error = null
             try {
-                const response = await DocumentTypeService.getDocumentTypes()
-                this.documentTypes = response.data.data
+                const {data} = await DocumentTypeService.getDocumentTypes()
+                this.documentTypes = data.data
+                this.isLoadingDocumentTypes = false
             } catch (error) {
                 this.error = error.response.message
+                this.isLoadingDocumentTypes = false
             } finally {
                 this.isLoadingDocumentTypes = false
             }

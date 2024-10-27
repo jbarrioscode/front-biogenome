@@ -1,9 +1,12 @@
 <script setup lang="ts">
 
-import {CCard, CCardBody} from "@coreui/vue/dist/esm/components/card";
 import {onMounted, reactive} from "vue";
-import PatientService from "@/services/patients/Patient.service.ts";
 import {CButton} from "@coreui/vue/dist/esm/components/button";
+import {usePatientStore} from "@/stores/patients/patientStore.ts";
+import PatientInformedConsentModal
+  from "@/components/patients/subComponents/PatientTableComponent/Modals/PatientInformedConsentModal.vue";
+
+const patientStore = usePatientStore()
 
 // Init Your table settings
 const table = reactive({
@@ -57,30 +60,12 @@ const table = reactive({
   },
 })
 
-const getPatientList = async () => {
-
-  table.isLoading = true
-
-  try {
-
-    const {data} = await PatientService.getAllPatients()
-    table.rows = data.data
-
-    table.isLoading = false
-
-  } catch (error) {
-    table.isLoading = false
-    console.log(error.response.message)
-  }
-
-}
-
-const removeItemFromTable = (id: number) => {
-  table.rows = table.rows.filter(item => item.id !== id)
+function removePatient(patientId: number) {
+  patientStore.removePatient(patientId);
 }
 
 onMounted(() => {
-  getPatientList()
+  patientStore.fetchPatientsList()
 })
 
 </script>
@@ -90,9 +75,9 @@ onMounted(() => {
   <div>
     <table-lite
         :is-slot-mode="true"
-        :is-loading="table.isLoading"
+        :is-loading="patientStore.isLoadingPatients"
         :columns="table.columns"
-        :rows="table.rows"
+        :rows="patientStore.patients"
         :total="table.totalRecordCount"
         :sortable="table.sortable"
         @is-finished="table.isLoading = false"
@@ -100,8 +85,23 @@ onMounted(() => {
 
       <template v-slot:actions="data">
 
-        <CButton @click.prevent="removeItemFromTable(data.value.id)" :title="`Eliminar Paciente ${data.value.numero_documento}`">
-          <CIcon icon="cil-trash" />
+        <CButton
+            class="delete-button"
+            @click="removePatient(data.value.id)"
+            :title="`Eliminar Paciente ${data.value.numero_documento}`">
+          <CIcon icon="cil-trash"/>
+        </CButton>
+
+        <PatientInformedConsentModal :patientId="data.value.id" />
+<!--        <CButton
+            class="edit-button"
+            title="Firmar Consentimiento">
+          <CIcon icon="cil-pencil"/>
+        </CButton>-->
+
+        <CButton
+            title="Diligenciar Historia">
+          <CIcon icon="cil-list"/>
         </CButton>
 
       </template>
@@ -112,5 +112,4 @@ onMounted(() => {
 </template>
 
 <style scoped>
-
 </style>

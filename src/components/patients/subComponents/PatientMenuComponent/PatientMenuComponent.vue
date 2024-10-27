@@ -3,6 +3,10 @@
 import {CCard, CCardBody} from "@coreui/vue/dist/esm/components/card";
 import {CButton} from "@coreui/vue/dist/esm/components/button";
 import CreatePatientModal from "@/components/patients/subComponents/PatientMenuComponent/Modals/CreatePatientModal.vue";
+import {usePatientStore} from "@/stores/patients/patientStore.ts";
+
+const patientStore = usePatientStore()
+
 </script>
 
 <template>
@@ -18,7 +22,7 @@ import CreatePatientModal from "@/components/patients/subComponents/PatientMenuC
 
         <CreatePatientModal />
 
-        <CButton size="sm" shape="rounded-pill" color="warning">
+        <CButton size="sm" shape="rounded-pill" color="warning" @click="() => patientStore.fetchPatientsList()">
           <CIcon icon="cil-reload" />
           Recargar
         </CButton>

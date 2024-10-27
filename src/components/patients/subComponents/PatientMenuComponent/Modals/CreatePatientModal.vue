@@ -8,37 +8,42 @@ const visibleStaticBackdropDemo = ref(false)
 
 </script>
 <template>
-  <CButton
-      size="sm"
-      shape="rounded-pill"
-      color="primary"
-      @click="() => { visibleStaticBackdropDemo = true }"
-  >
-    <CIcon icon="cil-user-plus"/>
-    Crear Pacientes
-  </CButton>
-  <CModal
-      backdrop="static"
-      :visible="visibleStaticBackdropDemo"
-      @close="() => { visibleStaticBackdropDemo = false }"
-      aria-labelledby="StaticBackdropExampleLabel"
-      size="xl"
-  >
-    <CModalHeader>
-      <CModalTitle id="StaticBackdropExampleLabel">
-        CREACIÓN DE PACIENTES
-      </CModalTitle>
-    </CModalHeader>
-    <CModalBody>
 
-      <CreatePatientForm />
+  <div>
+    <CButton
+        size="sm"
+        shape="rounded-pill"
+        color="primary"
+        @click="() => { visibleStaticBackdropDemo = true }"
+    >
+      <CIcon icon="cil-user-plus"/>
+      Crear Pacientes
+    </CButton>
 
-    </CModalBody>
-<!--    <CModalFooter>
-      <CButton color="secondary" @click="() => { visibleStaticBackdropDemo = false }">
-        Close
-      </CButton>
-      <CButton color="primary">Save changes</CButton>
-    </CModalFooter>-->
-  </CModal>
+    <CModal
+        backdrop="static"
+        :visible="visibleStaticBackdropDemo"
+        @close="() => { visibleStaticBackdropDemo = false }"
+        aria-labelledby="StaticBackdropExampleLabel"
+        size="xl"
+    >
+      <CModalHeader>
+        <CModalTitle id="StaticBackdropExampleLabel">
+          Ventana: Creación de Pacientes
+        </CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+
+        <CreatePatientForm />
+
+      </CModalBody>
+      <!--    <CModalFooter>
+            <CButton color="secondary" @click="() => { visibleStaticBackdropDemo = false }">
+              Close
+            </CButton>
+            <CButton color="primary">Save changes</CButton>
+          </CModalFooter>-->
+    </CModal>
+  </div>
+
 </template>

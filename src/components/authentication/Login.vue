@@ -5,8 +5,9 @@ import {CCard, CCardBody} from "@coreui/vue/dist/esm/components/card";
 import {CCol, CRow} from "@coreui/vue/dist/esm/components/grid";
 import {CButton} from "@coreui/vue/dist/esm/components/button";
 import {reactive, ref} from "vue";
-import { useAuthStore } from "@/stores/authentication/authStore.ts";
+import {useAuthStore} from "@/stores/authentication/authStore.ts";
 import {useRouter} from "vue-router";
+import {CSpinner} from "@coreui/vue/dist/esm/components/spinner/index.js";
 
 /* Using router */
 const router = useRouter()
@@ -26,13 +27,23 @@ const credentials = reactive({
 })
 
 const errors = ref(null)
+const isAuthenticating = ref(false)
 
 const loginFormFunction = async () => {
+
+  isAuthenticating.value = true
+
   try {
     await auth.loginFunction(credentials)
-  } catch(error) {
+
+    isAuthenticating.value = false
+
+  } catch (error) {
     errors.value = error
     console.error(error)
+    isAuthenticating.value = false
+  } finally {
+    isAuthenticating.value = false
   }
   await router.push({name: 'dashboard'})
 }
@@ -70,12 +81,10 @@ const loginFormFunction = async () => {
           </CInputGroup>
           <CRow>
             <CCol>
-              <CButton
-                  color="primary"
-                  class="px-4"
-                  type="submit"
-              >
-                Iniciar Sesión
+
+              <CButton color="primary" :disabled="isAuthenticating" class="px-4" type="submit">
+                <CSpinner as="span" size="sm" aria-hidden="true" v-if="isAuthenticating"/>
+                {{ isAuthenticating ? 'Ingresando...' : 'Iniciar Sesión' }}
               </CButton>
             </CCol>
             <CCol class="d-flex justify-content-end align-items-center">

@@ -1,4 +1,4 @@
 export interface ILoginParams {
-    email: string | null,
-    password: string | null
+    email: String | null,
+    password: String | null
 }
