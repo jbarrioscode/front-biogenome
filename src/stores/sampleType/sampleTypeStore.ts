@@ -12,7 +12,7 @@ export const useSampleTypeStore = defineStore('sampleTypes', {
             this.isLoadingSamplesTypes = true
             this.error = null
             try {
-                const {data} = SampleTypeService.getAllSampleTypes()
+                const {data} = await SampleTypeService.getAllSampleTypes()
                 this.sampleTypes = data.data
                 this.isLoadingSamplesTypes = false
             } catch (error) {

@@ -17,9 +17,6 @@ export const useApi = () => {
         withXSRFToken: true
     })
 
-    console.log(VITE_NODE_ENV)
-    console.log(VITE_BASE_URL)
-
     axiosInstance.interceptors.request.use( middlewareCSRF, err => Promise.reject(err))
     axiosInstance.interceptors.response.use(resp => resp, middleware401)
 

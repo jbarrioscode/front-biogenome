@@ -5,11 +5,19 @@ import AppHeader from "../components/globals/AppHeader.vue";
 import AppFooter from "../components/globals/AppFooter.vue";
 import {useDocumentTypesStore} from "@/stores/settings/documentTypesStore.ts";
 import {onMounted} from "vue";
+import {useSampleTypeStore} from "@/stores/sampleType/sampleTypeStore.ts";
+import {useProtocolStore} from "@/stores/protocols/protocolStore.ts";
+import {useAuthStore} from "@/stores/authentication/authStore.ts";
 
-const documentTypes = useDocumentTypesStore()
+const authStore = useAuthStore()
+const documentTypesStore = useDocumentTypesStore()
+const protocolStore = useProtocolStore()
+const sampleTypeStore = useSampleTypeStore()
 
 onMounted(() => {
-  documentTypes.fetchDocumentTypes()
+  documentTypesStore.fetchDocumentTypes()
+  protocolStore.fetchActiveProtocols(1)
+  sampleTypeStore.fetchSampleTypes()
 })
 
 </script>

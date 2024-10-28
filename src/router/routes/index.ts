@@ -8,6 +8,7 @@ import PatientMainComponent from "@/components/patients/PatientMainComponent.vue
 import ReportsMainComponent from "@/components/reports/ReportsMainComponent.vue";
 import SamplesMainComponent from "@/components/samples/SamplesMainComponent.vue";
 import SettingsMainComponent from "@/components/settings/SettingsMainComponent.vue";
+import UsersMainComponent from "../../components/settings/users/UsersMainComponent.vue";
 
 const routesObject: any = [
     {
@@ -64,6 +65,28 @@ const routesObject: any = [
                 path: '/settings',
                 name: 'settings',
                 component: SettingsMainComponent,
+                children: [
+                    {
+                        path: '/users',
+                        name: 'users',
+                        component: UsersMainComponent,
+                    },
+                    {
+                        path: '/roles',
+                        name: 'roles',
+                        component: SettingsMainComponent,
+                    },
+                    {
+                        path: '/permissions',
+                        name: 'permissions',
+                        component: SettingsMainComponent,
+                    },
+                    {
+                        path: '/headquarters',
+                        name: 'headquarters',
+                        component: SettingsMainComponent,
+                    }
+                ]
             },
         ]
     },

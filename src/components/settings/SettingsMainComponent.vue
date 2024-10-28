@@ -1,26 +1,19 @@
 <script setup lang="ts">
 
+import {useRoleStore} from "@/stores/settings/roleStore.ts";
+import {onMounted} from "vue";
+
+const roleStore = useRoleStore()
+
+onMounted(() => {
+  roleStore.fetchRoles()
+})
+
 </script>
 
 <template>
-  <div class="container">
-
-    <div class="row mb-3">
-      <div class="col">
-        <p>menu</p>
-      </div>
-      <!-- /.col -->
-    </div>
-    <!-- /.row -->
-
-    <div class="row">
-      <div class="col">
-        <p>Tabla</p>
-      </div>
-      <!-- /.col -->
-    </div>
-    <!-- /.row -->
-
+  <div>
+    <router-view/>
   </div>
 </template>
 
