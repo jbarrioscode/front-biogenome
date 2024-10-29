@@ -2,14 +2,21 @@
 
 import {CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle} from "@coreui/vue/dist/esm/components/modal";
 import {CButton} from "@coreui/vue/dist/esm/components/button";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import {CCol, CRow} from "@coreui/vue/dist/esm/components/grid";
+import {useSampleTypeStore} from "@/stores/sampleType/sampleTypeStore.ts";
 
 const props = defineProps({
   patientId: Number
 })
 
+const sampleTypeStore = useSampleTypeStore()
+
 const visibleStaticBackdropDemo = ref(false)
+
+onMounted(() => {
+  sampleTypeStore.fetchSampleTypes()
+})
 
 </script>
 
@@ -40,7 +47,23 @@ const visibleStaticBackdropDemo = ref(false)
 
       <CRow>
         <CCol>
+          <div class="radio-tile-group">
 
+            <h6>Seleccione el tipo de estudio</h6>
+
+            <div class="input-container" v-for="item in sampleTypeStore.sampleTypes" :key="item.id">
+              <input id="walk" class="radio-button" type="radio" name="radio">
+              <div class="radio-tile">
+                <div class="icon walk-icon">
+                  <CIcon class="icon" icon="cil-people" />
+                </div>
+                <label for="walk" class="radio-tile-label">
+                  {{ item.nombre }}
+                </label>
+              </div>
+            </div>
+
+          </div>
         </CCol>
       </CRow>
 

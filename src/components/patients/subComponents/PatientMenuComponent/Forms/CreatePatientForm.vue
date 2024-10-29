@@ -52,14 +52,9 @@ const savePatient = async () => {
     swal.fire({
       icon: 'error',
       text: error.response.message,
-      title: "Good job!",
     })
     console.log(error.response.message)
   }
-
-
-
-  console.log(res.data.data)
 
 }
 

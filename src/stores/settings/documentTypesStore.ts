@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import DocumentTypeService from "../../services/settings/DocumentType.service.ts";
+import DocumentTypeService from "@/services/settings/DocumentType.service.ts";
 
 interface DocumentTypesState {
     documentTypes: Array<any>  // Puedes reemplazar `any` por una interfaz específica si conoces la estructura

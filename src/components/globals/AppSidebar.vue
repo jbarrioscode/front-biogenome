@@ -118,19 +118,19 @@ function redirectToViews(view: string) {
           <CIcon customClassName="nav-icon" icon="cil-puzzle"/>
           Administración
         </template>
-        <CNavItem href="#">
+        <CNavItem href="#" @click.prevent="redirectToViews('users')">
           <span class="nav-icon"><span class="nav-icon-bullet"></span></span> Usuarios
         </CNavItem>
-        <CNavItem href="#">
+        <CNavItem href="#" @click.prevent="redirectToViews('roles')">
           <span class="nav-icon"><span class="nav-icon-bullet"></span></span> Roles
         </CNavItem>
-        <CNavItem href="#">
+        <CNavItem href="#" @click.prevent="redirectToViews('permissions')">
           <span class="nav-icon"><span class="nav-icon-bullet"></span></span> Permisos
         </CNavItem>
-        <CNavItem href="#">
+        <CNavItem href="#" @click.prevent="redirectToViews('headquarters')">
           <span class="nav-icon"><span class="nav-icon-bullet"></span></span> Sedes
         </CNavItem>
-        <CNavItem href="#">
+        <CNavItem href="#" @click.prevent="redirectToViews('users')">
           <span class="nav-icon"><span class="nav-icon-bullet"></span></span> Protocolos
         </CNavItem>
       </CNavGroup>
