@@ -1,10 +1,11 @@
 <script setup lang="ts">
 
+import {useRoleStore} from "@/stores/settings/roleStore.ts";
 import {onMounted, reactive} from "vue";
-import {useUsersStore} from "@/stores/settings/usersStore.ts";
 import {CButton} from "@coreui/vue/dist/esm/components/button";
+import {CBadge} from "@coreui/vue/dist/esm/components/badge";
 
-const usersStore = useUsersStore()
+const roleStore = useRoleStore()
 
 // Init Your table settings
 const table = reactive({
@@ -18,47 +19,29 @@ const table = reactive({
       isKey: true,
     },
     {
-      label: "T. Doc",
-      field: "doctype",
-      sortable: true,
-      isKey: true,
-    },
-    {
-      label: "Documento",
-      field: "document",
-      sortable: true,
-      isKey: true,
-    },
-    {
       label: "Nombre",
       field: "name",
+      width: '10%',
       sortable: true,
       isKey: true,
     },
     {
-      label: "Usuario",
-      field: "username",
+      label: "Fecha Creacion",
+      field: "created_at",
+      width: '15%',
       sortable: true,
       isKey: true,
     },
     {
-      label: "Email",
-      field: "email",
+      label: "Permisos",
+      field: "permissions",
       sortable: true,
-    },
-    {
-      label: "Teléfono",
-      field: "phone",
-      sortable: true,
-    },
-    {
-      label: "Rol",
-      field: "role",
-      sortable: true,
+      isKey: true,
     },
     {
       label: "Acciones",
       field: "actions",
+      width: '10%'
     }
   ],
   rows: [],
@@ -69,12 +52,12 @@ const table = reactive({
   },
 })
 
-function removeUserFromList(userId: number) {
-  usersStore.removeUserFromList(userId)
+function removeRoleFromList(roleId: number) {
+  roleStore.removeRoleFromList(roleId)
 }
 
 onMounted(() => {
-  usersStore.fetchActiveUsers()
+  roleStore.fetchRoles()
 })
 
 </script>
@@ -83,31 +66,28 @@ onMounted(() => {
   <div>
     <table-lite
         :is-slot-mode="true"
-        :is-loading="usersStore.isLoadingUsers"
+        :is-loading="roleStore.isLoadingRoles"
         :columns="table.columns"
-        :rows="usersStore.users"
+        :rows="roleStore.roles"
         :total="table.totalRecordCount"
         :sortable="table.sortable"
         @is-finished="table.isLoading = false"
     >
 
-      <template v-slot:doctype="data">
-        {{ data.value.doctype.initials }}
-      </template>
 
-      <template v-slot:role="data">
-        {{ data.value.roles[0].name }}
-      </template>
-
-      <template v-slot:name="data">
-        {{ data.value.firstName + ' ' +  data.value.middleName + ' ' +  data.value.lastName + ' ' +  data.value.surName }}
+      <template v-slot:permissions="data">
+        <h6>
+          <CBadge color="secondary" v-for="item in data.value.permissions" :key="item.id">
+            {{ item.name }}
+          </CBadge>
+        </h6>
       </template>
 
       <template v-slot:actions="data">
 
         <CButton
             class="delete-button"
-            @click="removeUserFromList(data.value.id)"
+            @click="removeRoleFromList(data.value.id)"
             :title="`Eliminar Usuario ${data.value.document}`">
           <CIcon icon="cil-trash"/>
         </CButton>

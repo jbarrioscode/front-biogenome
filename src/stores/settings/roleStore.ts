@@ -26,6 +26,9 @@ export const useRoleStore = defineStore('roles', {
             } finally {
                 this.isLoadingRoles = false
             }
+        },
+        removeRoleFromList(roleId: number) {
+            this.roles = this.roles.filter(role => role.id !== roleId)
         }
     }
 })
