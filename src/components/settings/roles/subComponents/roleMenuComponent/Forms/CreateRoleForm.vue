@@ -1,18 +1,21 @@
 <script setup lang="ts">
-import {inject, reactive, ref} from "vue";
+import {inject, onMounted, reactive, ref} from "vue";
 import RoleService from "@/services/settings/Role.service.ts";
-import {CForm, CFormInput, CFormLabel} from "@coreui/vue/dist/esm/components/form";
+import {CForm, CFormCheck, CFormInput, CFormLabel} from "@coreui/vue/dist/esm/components/form";
 import {CCol, CRow} from "@coreui/vue/dist/esm/components/grid";
 import {CButton} from "@coreui/vue/dist/esm/components/button";
 import {CSpinner} from "@coreui/vue/dist/esm/components/spinner";
 import {useRoleStore} from "@/stores/settings/roleStore.ts";
+import {usePermissionStore} from "@/stores/settings/permissionStore.ts";
 
 const Swal = inject('$swal')
 
 const roleStore = useRoleStore()
+const permissionStore = usePermissionStore()
 
 const formData = reactive({
-  name: null
+  name: null,
+  permissions: []
 })
 const isSavingRole = ref(false)
 const errors = ref(null)
@@ -20,12 +23,11 @@ const errors = ref(null)
 const saveRole = async () => {
   isSavingRole.value = true
   errors.value = null
-
   try {
 
     const payload = {...formData}
 
-    const {data } = await RoleService.createRole(payload)
+    const {data} = await RoleService.createRole(payload)
 
     Swal.fire({
       icon: 'success',
@@ -34,6 +36,7 @@ const saveRole = async () => {
     })
 
     formData.name = null
+    formData.permissions = []
     await roleStore.fetchRoles()
     isSavingRole.value = false
 
@@ -47,10 +50,7 @@ const saveRole = async () => {
   } finally {
     isSavingRole.value = false
   }
-
 }
-
-//name
 </script>
 
 <template>
@@ -58,10 +58,31 @@ const saveRole = async () => {
     <CForm class="row g-3" @submit.prevent="saveRole">
       <CCol>
 
-        <CRow class="mb-5">
+        <CRow class="mb-3">
           <CCol>
             <CFormLabel for="inputRoleName">Nombre del ROL:</CFormLabel>
             <CFormInput type="text" placeholder="Rol" id="inputRoleName" v-model="formData.name"/>
+          </CCol>
+        </CRow>
+
+        <CRow class="mb-5">
+          <CCol>
+
+            <div>
+              <h5 class="fw-bolder text-uppercase">Listado de Permisos</h5>
+            </div>
+
+            <div v-for="(item, index) in permissionStore.permissions" class="form-check">
+              <CFormCheck
+                  :id="`flexCheckDefault-${item.id}`"
+                  v-model="formData.permissions"
+                  :value="item.name"
+                  checked
+                  :label="item.name"
+              />
+            </div>
+
+
           </CCol>
         </CRow>
 
@@ -69,13 +90,14 @@ const saveRole = async () => {
           <CCol>
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
               <CButton shape="rounded-pill" color="warning" type="reset" class="me-md-2">
-                <CIcon icon="cil-x" />
+                <CIcon icon="cil-x"/>
                 Cancelar
               </CButton>
-              <CButton shape="rounded-pill" color="primary" type="submit" :disabled="isSavingRole">
-                <CSpinner as="span" size="sm" aria-hidden="true" v-if="isSavingRole" />
-                <CIcon icon="cil-save" v-else />
-                {{ isSavingRole ?  'Guardando...' : 'Registrar Rol' }}
+              <CButton shape="rounded-pill" color="primary" type="submit"
+                       :disabled="isSavingRole || (!formData.name || !formData.permissions.length)">
+                <CSpinner as="span" size="sm" aria-hidden="true" v-if="isSavingRole"/>
+                <CIcon icon="cil-save" v-else/>
+                {{ isSavingRole ? 'Guardando...' : 'Registrar Rol' }}
               </CButton>
             </div>
           </CCol>

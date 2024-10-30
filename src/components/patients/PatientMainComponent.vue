@@ -2,28 +2,25 @@
 
 import PatientComponentMenu from "@/components/patients/subComponents/PatientMenuComponent/PatientMenuComponent.vue";
 import PatientTableComponent from "@/components/patients/subComponents/PatientTableComponent/PatientTableComponent.vue";
+import {CCol, CContainer, CRow} from "@coreui/vue/dist/esm/components/grid";
 </script>
 
 <template>
-  <div class="container">
+  <CContainer xl>
 
-    <div class="row mb-3">
-      <div class="col">
+    <CRow class="mb-4">
+      <CCol>
         <PatientComponentMenu />
-      </div>
-      <!-- /.col -->
-    </div>
-    <!-- /.row -->
+      </CCol>
+    </CRow>
 
-    <div class="row">
-      <div class="col">
+    <CRow>
+      <CCol>
         <PatientTableComponent />
-      </div>
-      <!-- /.col -->
-    </div>
-    <!-- /.row -->
+      </CCol>
+    </CRow>
 
-  </div>
+  </CContainer>
 </template>
 
 <style scoped>

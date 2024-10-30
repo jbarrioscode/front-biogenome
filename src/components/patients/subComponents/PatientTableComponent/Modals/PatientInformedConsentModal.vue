@@ -5,6 +5,7 @@ import {CButton} from "@coreui/vue/dist/esm/components/button";
 import {onMounted, ref} from "vue";
 import {CCol, CRow} from "@coreui/vue/dist/esm/components/grid";
 import {useSampleTypeStore} from "@/stores/sampleType/sampleTypeStore.ts";
+import InformedConsentService from "@/services/informedConsent/InformedConsent.service.ts";
 
 const props = defineProps({
   patientId: Number
@@ -52,7 +53,7 @@ onMounted(() => {
             <h6>Seleccione el tipo de estudio</h6>
 
             <div class="input-container" v-for="item in sampleTypeStore.sampleTypes" :key="item.id">
-              <input id="walk" class="radio-button" type="radio" name="radio">
+              <input id="walk" class="radio-button" type="radio" name="radio" @change.prevent="() => InformedConsentService.getInformedConsentByProtocolId(item.id)">
               <div class="radio-tile">
                 <div class="icon walk-icon">
                   <CIcon class="icon" icon="cil-people" />
