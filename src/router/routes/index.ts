@@ -8,7 +8,9 @@ import PatientMainComponent from "@/components/patients/PatientMainComponent.vue
 import ReportsMainComponent from "@/components/reports/ReportsMainComponent.vue";
 import SamplesMainComponent from "@/components/samples/SamplesMainComponent.vue";
 import SettingsMainComponent from "@/components/settings/SettingsMainComponent.vue";
-import UsersMainComponent from "../../components/settings/users/UsersMainComponent.vue";
+import UsersMainComponent from "@/components/settings/users/UsersMainComponent.vue";
+import RolesMainComponent from "@/components/settings/roles/RolesMainComponent.vue";
+import PermissionsMainComponent from "@/components/settings/permissions/PermissionsMainComponent.vue";
 
 const routesObject: any = [
     {
@@ -74,12 +76,12 @@ const routesObject: any = [
                     {
                         path: '/roles',
                         name: 'roles',
-                        component: SettingsMainComponent,
+                        component: RolesMainComponent,
                     },
                     {
                         path: '/permissions',
                         name: 'permissions',
-                        component: SettingsMainComponent,
+                        component: PermissionsMainComponent,
                     },
                     {
                         path: '/headquarters',

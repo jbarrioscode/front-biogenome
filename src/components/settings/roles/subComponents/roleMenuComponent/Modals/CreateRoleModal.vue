@@ -1,12 +1,10 @@
 <script setup lang="ts">
-
 import {ref} from "vue";
-import {CModal, CModalBody, CModalHeader, CModalTitle} from "@coreui/vue/dist/esm/components/modal";
 import {CButton} from "@coreui/vue/dist/esm/components/button";
-import CreateUserForm from "@/components/settings/users/subComponents/userMenuComponent/Forms/CreateUserForm.vue";
+import {CModal, CModalBody, CModalHeader, CModalTitle} from "@coreui/vue/dist/esm/components/modal";
+import CreateRoleForm from "@/components/settings/roles/subComponents/roleMenuComponent/Forms/CreateRoleForm.vue";
 
 const visibleStaticBackdropDemo = ref(false)
-
 </script>
 
 <template>
@@ -17,8 +15,8 @@ const visibleStaticBackdropDemo = ref(false)
         color="primary"
         @click="() => { visibleStaticBackdropDemo = true }"
     >
-      <CIcon icon="cil-user-plus"/>
-      Crear Usuario
+      <CIcon icon="cil-plus"/>
+      Crear Rol
     </CButton>
 
     <CModal
@@ -26,16 +24,16 @@ const visibleStaticBackdropDemo = ref(false)
         :visible="visibleStaticBackdropDemo"
         @close="() => { visibleStaticBackdropDemo = false }"
         aria-labelledby="StaticBackdropExampleLabel"
-        size="xl"
+        size="lg"
     >
       <CModalHeader>
         <CModalTitle id="StaticBackdropExampleLabel">
-          Ventana: Creación de Usuarios
+          Ventana: Creación de Roles
         </CModalTitle>
       </CModalHeader>
       <CModalBody>
 
-        <CreateUserForm />
+        <CreateRoleForm />
 
       </CModalBody>
     </CModal>

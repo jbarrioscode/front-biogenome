@@ -19,8 +19,6 @@ import UserMenuComponent from "@/components/settings/users/subComponents/userMen
     </div>
 
   </div>
-
-
 </template>
 
 <style scoped>

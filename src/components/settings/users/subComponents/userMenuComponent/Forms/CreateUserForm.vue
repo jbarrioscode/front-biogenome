@@ -36,18 +36,18 @@ const saveUser = async () => {
       ...formData,
       password: formData.document
     }
-    const {data, statusCode, message} = await UsersService.createUser(payload)
+    const {data} = await UsersService.createUser(payload)
 
-    if (statusCode !== 201) {
+    if (data.statusCode !== 201) {
       Swal.fire({
         icon: 'error',
-        text: message
+        text: data.message
       })
     }
 
     Swal.fire({
       icon: 'success',
-      text: message,
+      text: data.message,
       title: "Buen Trabajo!",
     })
 
