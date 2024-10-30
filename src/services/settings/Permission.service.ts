@@ -9,9 +9,9 @@ export default {
     createPermission(payload) {
         return api.post(`/api/v1/permissions/store`, payload)
     },
-    /*updatePermission(permissionId, payload) {
-        return api.put(`/api/v1/roles/edit/${permissionId}`, payload)
-    },*/
+    updatePermission(permissionId, payload) {
+        return api.put(`/api/v1/permissions/update/${permissionId}`, payload)
+    },
     deletePermission(permissionId) {
         return api.delete(`/api/v1/permissions/delete/${permissionId}`)
     },

@@ -27,8 +27,23 @@ export const usePermissionStore = defineStore('permissions', {
                 this.isLoadingPermissions = false
             }
         },
-        removePermissionFromList(permissionId: number) {
-            this.permissions = this.permissions.filter(permission => permission.id !== permissionId)
+        updateLoadingStatus(status: boolean) {
+            this.isLoadingPermissions = status
         }
+        /*async removePermissionFromList(permissionId: number) {
+
+            this.isLoadingPermissions = true
+
+            try {
+
+                this.isLoadingPermissions = false
+            } catch (error) {
+                this.isLoadingPermissions = false
+            } finally {
+                this.isLoadingPermissions = false
+            }
+
+            this.permissions = this.permissions.filter(permission => permission.id !== permissionId)
+        }*/
     }
 })
