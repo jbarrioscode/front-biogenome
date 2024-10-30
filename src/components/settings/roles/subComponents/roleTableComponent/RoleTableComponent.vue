@@ -1,11 +1,14 @@
 <script setup lang="ts">
 
 import {useRoleStore} from "@/stores/settings/roleStore.ts";
-import {onMounted, reactive} from "vue";
+import {inject, onMounted, reactive} from "vue";
 import {CButton} from "@coreui/vue/dist/esm/components/button";
 import {CBadge} from "@coreui/vue/dist/esm/components/badge";
+import RoleService from "@/services/settings/Role.service.ts";
 
 const roleStore = useRoleStore()
+
+const Swal = inject('$swal')
 
 // Init Your table settings
 const table = reactive({
@@ -52,8 +55,26 @@ const table = reactive({
   },
 })
 
-function removeRoleFromList(roleId: number) {
-  roleStore.removeRoleFromList(roleId)
+const removeRole = async (roleId: number) => {
+
+  try {
+
+    const {data} = await RoleService.deleteRole(roleId)
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Buen trabajo!',
+      text: data.message
+    })
+    await roleStore.fetchRoles()
+  } catch (error) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oooops!',
+      text: error.response.message
+    })
+  }
+
 }
 
 onMounted(() => {
@@ -77,7 +98,7 @@ onMounted(() => {
 
       <template v-slot:permissions="data">
         <h6>
-          <CBadge color="secondary" v-for="item in data.value.permissions" :key="item.id">
+          <CBadge class="me-1" color="secondary" v-for="item in data.value.permissions" :key="item.id">
             {{ item.name }}
           </CBadge>
         </h6>
@@ -87,7 +108,7 @@ onMounted(() => {
 
         <CButton
             class="delete-button"
-            @click="removeRoleFromList(data.value.id)"
+            @click="removeRole(data.value.id)"
             :title="`Eliminar Usuario ${data.value.document}`">
           <CIcon icon="cil-trash"/>
         </CButton>

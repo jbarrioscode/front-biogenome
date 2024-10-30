@@ -10,7 +10,7 @@ export default {
         return api.post(`/api/v1/roles/store`, payload)
     },
     updateRole(roleId, payload) {
-        return api.put(`/api/v1/roles/edit/${roleId}`, payload)
+        return api.put(`/api/v1/roles/update/${roleId}`, payload)
     },
     deleteRole(roleId) {
         return api.delete(`/api/v1/roles/delete/${roleId}`)
