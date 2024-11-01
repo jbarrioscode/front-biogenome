@@ -8,9 +8,8 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        quietDeps: true,
-        silenceDeprecations: ["legacy-js-api"],
-        api: 'modern'
+        silenceDeprecations: ['legacy-js-api'],
+        api: 'modern',
       },
     },
   },

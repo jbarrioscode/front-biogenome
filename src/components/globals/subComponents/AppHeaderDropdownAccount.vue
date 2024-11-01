@@ -9,8 +9,10 @@ import {
 import {CAvatar} from "@coreui/vue/dist/esm/components/avatar";
 import avatar from '@/assets/images/avatars/2.jpg'
 import {useAuthStore} from "@/stores/authentication/authStore.ts";
+import {useUserStore} from "@/stores/authentication/userStore.ts";
 
 const auth = useAuthStore()
+const userStore = useUserStore()
 const logoutFn = async () => {
   await auth.logoutFunction()
 }
@@ -20,32 +22,10 @@ const logoutFn = async () => {
 <template>
   <CDropdown placement="bottom-end" variant="nav-item">
     <CDropdownToggle class="py-0" :caret="false">
-      Hola, Camilo
+      Hola, {{ userStore.firstName }}
       <CAvatar class="ms-2" :src="avatar" size="md" status="success"/>
     </CDropdownToggle>
     <CDropdownMenu class="pt-0">
-<!--      <CDropdownHeader
-          as="h6"
-          class="bg-body-secondary text-body-secondary fw-semibold rounded-top mb-2"
-      >
-        account
-      </CDropdownHeader>
-      <CDropdownItem>
-        <CIcon icon="cil-bell"/>
-        updates
-      </CDropdownItem>
-      <CDropdownItem>
-        <CIcon icon="cil-envelope-open"/>
-        messages
-      </CDropdownItem>
-      <CDropdownItem>
-        <CIcon icon="cil-task"/>
-        tasks
-      </CDropdownItem>
-      <CDropdownItem>
-        <CIcon icon="cil-comment-square"/>
-        comments
-      </CDropdownItem>-->
 
       <!-- Settings and Profile Section -->
       <CDropdownHeader

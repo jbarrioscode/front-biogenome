@@ -23,12 +23,24 @@ import VueTableLite from "vue3-table-lite/ts"
 import VueSweetalert2 from 'vue-sweetalert2'
 import 'sweetalert2/dist/sweetalert2.min.css'
 
+/* Pulse Loader */
+import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
+
+/* FontAwesome */
+import FontAwesomeIcon from "@/components/icons"
+
+/* Vue Signature PAD */
+import Vue3Signature from "vue3-signature"
+
 const app = createApp(App)
 app.use(pinia)
 app.use(router)
 app.use(CoreuiVue)
 app.use(VueSweetalert2)
+app.use(Vue3Signature)
+app.component('font-awesome-icon', FontAwesomeIcon)
 app.component('table-lite', VueTableLite)
+app.component('pulse-loader', PulseLoader)
 app.provide('icons', icons)
 app.component('CIcon', CIcon)
 app.mount('#app')

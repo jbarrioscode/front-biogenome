@@ -2,22 +2,82 @@
 
 import {CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle} from "@coreui/vue/dist/esm/components/modal";
 import {CButton} from "@coreui/vue/dist/esm/components/button";
-import {onMounted, ref} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import {CCol, CRow} from "@coreui/vue/dist/esm/components/grid";
 import {useSampleTypeStore} from "@/stores/sampleType/sampleTypeStore.ts";
 import InformedConsentService from "@/services/informedConsent/InformedConsent.service.ts";
+import {useUserStore} from "@/stores/authentication/userStore.ts";
+import {useProtocolStore} from "@/stores/protocols/protocolStore.ts";
+import {CButtonGroup} from "@coreui/vue/dist/esm/components/button-group";
 
 const props = defineProps({
-  patientId: Number
+  patientId: Number,
+  patientHasProtocol: Boolean
 })
 
-const sampleTypeStore = useSampleTypeStore()
+const protocolStore = useProtocolStore()
 
+const loaderParams = ref({
+  color: '#4fc08d',
+})
 const visibleStaticBackdropDemo = ref(false)
+const informedConsentData = ref([])
+const isLoadingInformedConsent = ref(false)
 
-onMounted(() => {
-  sampleTypeStore.fetchSampleTypes()
+const formData = reactive(({
+  protocolSelected: null,
+  signatureString: null
+}))
+
+/* Signature PAD Variables */
+const signaturePadState = reactive({
+  count: 0,
+  option: {
+    penColor: "rgb(0, 0, 0)",
+    backgroundColor: "rgb(211,211,211)"
+  },
+  disabled: false
 })
+const signature1 = ref(null)
+const saveSignature = (t) => {
+  //console.log(signature1.value.save(t))
+  formData.signatureString = signature1.value.save(t)
+}
+
+const clearSignature = () => {
+  signature1.value.clear()
+  formData.signatureString = null
+}
+
+const undoSignature = () => {
+  signature1.value.undo();
+}
+
+const getInformedConsentBySampleID = async (protocolID: number) => {
+  isLoadingInformedConsent.value = true
+  informedConsentData.value = []
+  formData.signatureString ? clearSignature() : null
+  try {
+    const {data} = await InformedConsentService.getInformedConsentByProtocolId(protocolID)
+    informedConsentData.value = data.data
+    isLoadingInformedConsent.value = false
+  } catch (error) {
+    console.log(error.response.message)
+    isLoadingInformedConsent.value = false
+  } finally {
+    isLoadingInformedConsent.value = false
+  }
+}
+
+const saveInformedConsent = async () => {
+  const payload = {
+    tipo_consentimiento_informado_id: formData.protocolSelected,
+    paciente_id: props.patientId,
+    firma: formData.signatureString
+  }
+
+  console.log(payload)
+}
 
 </script>
 
@@ -28,6 +88,7 @@ onMounted(() => {
       shape="rounded-pill"
       class="edit-button"
       @click="() => { visibleStaticBackdropDemo = true }"
+      :disabled="patientHasProtocol"
   >
     <CIcon icon="cil-pencil"/>
   </CButton>
@@ -46,20 +107,35 @@ onMounted(() => {
     </CModalHeader>
     <CModalBody>
 
-      <CRow>
-        <CCol>
+      <!-- Protocol Selection Section -->
+      <CRow class="mb-4">
+        <CCol v-if="protocolStore.isLoadingProtocol" class="text-center">
+          <pulse-loader :loading="protocolStore.isLoadingProtocol" :color="loaderParams.color"></pulse-loader>
+        </CCol>
+
+        <CCol v-else class="text-center">
+          <div>
+            <h6>Seleccione el protocolo que aplicará al Paciente</h6>
+          </div>
+
           <div class="radio-tile-group">
 
-            <h6>Seleccione el tipo de estudio</h6>
-
-            <div class="input-container" v-for="item in sampleTypeStore.sampleTypes" :key="item.id">
-              <input id="walk" class="radio-button" type="radio" name="radio" @change.prevent="() => InformedConsentService.getInformedConsentByProtocolId(item.id)">
+            <div class="input-container" v-for="item in protocolStore.protocols" :key="item.protocolo_id">
+              <input
+                  id="walk"
+                  class="radio-button"
+                  type="radio"
+                  name="radio"
+                  :value="item.protocolo_id"
+                  v-model="formData.protocolSelected"
+                  @change.prevent="getInformedConsentBySampleID(item.protocolo_id)"
+              >
               <div class="radio-tile">
                 <div class="icon walk-icon">
-                  <CIcon class="icon" icon="cil-people" />
+                  <font-awesome-icon :icon="['fas', 'microscope']"/>
                 </div>
                 <label for="walk" class="radio-tile-label">
-                  {{ item.nombre }}
+                  {{ item.protocolo }}
                 </label>
               </div>
             </div>
@@ -67,53 +143,70 @@ onMounted(() => {
           </div>
         </CCol>
       </CRow>
+      <!-- End Protocol Selection Section -->
 
-      <p>
-        What is Lorem Ipsum?
-        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's
-        standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make
-        a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting,
-        remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing
-        Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions
-        of Lorem Ipsum.
+      <!-- Informed Consent Section -->
+      <CRow v-if="formData.protocolSelected">
 
-        <br>
-        <br>
-        <br>
+        <CCol v-if="isLoadingInformedConsent" class="text-center">
+          <pulse-loader :loading="isLoadingInformedConsent" :color="loaderParams.color"></pulse-loader>
+        </CCol>
 
-        Why do we use it?
-        It is a long established fact that a reader will be distracted by the readable content of a page when looking at
-        its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as
-        opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing
-        packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum'
-        will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by
-        accident, sometimes on purpose (injected humour and the like).
+        <CCol v-else>
+          <h5>CONSENTIMIENTO INFORMADO</h5>
+          <pre v-if="informedConsentData.length" class="text-center">
+            {{ informedConsentData[0] ? informedConsentData[0].consentimiento : '' }}
+          </pre>
+          <p class="mb-0 text-center" v-else>
+            <font-awesome-icon class="icon" :icon="['far', 'face-frown']"/>
+            {{ 'No se encontraron consentimiento para este protocolo' }}
+          </p>
+        </CCol>
+      </CRow>
+      <!-- End Informed Consent Section -->
 
-        <br>
-        <br>
-        <br>
-
-        Where does it come from?
-        Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin
-        literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney
-        College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and
-        going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum
-        comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by
-        Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance.
-        The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
-
-        The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections
-        1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original
-        form, accompanied by English versions from the 1914 translation by H. Rackham.
-      </p>
-
+      <!-- Signature PAD Section -->
+      <CRow v-if="informedConsentData.length">
+        <CCol class="mw-100 d-flex justify-content-center align-items-center">
+          <Vue3Signature ref="signature1" :sigOption="signaturePadState.option" :w="'1028px'" :h="'450px'"
+                         :disabled="signaturePadState.disabled" class="example"/>
+        </CCol>
+        <CCol class="text-center mt-4">
+          <CButtonGroup role="group" aria-label="Basic outlined example">
+            <CButton color="warning" @click.prevent="clearSignature">
+              <font-awesome-icon :icon="['fas', 'brush']"/>
+              Limpiar
+            </CButton>
+            <CButton color="secondary" @click.prevent="undoSignature">
+              <font-awesome-icon :icon="['fas', 'rotate-left']"/>
+              Deshacer
+            </CButton>
+            <CButton color="info" @click.prevent="saveSignature">
+              <font-awesome-icon :icon="['fas', 'signature']"/>
+              Guardar firma
+            </CButton>
+          </CButtonGroup>
+        </CCol>
+      </CRow>
+      <!-- End Signature PAD Section -->
 
     </CModalBody>
     <CModalFooter>
-      <CButton color="danger" @click="() => { visibleStaticBackdropDemo = false }">
+      <CButton
+          color="danger"
+          class="text-white"
+          @click="() => {
+            visibleStaticBackdropDemo = false;
+            signature1.clear()
+          }"
+      >
         Cerrar ventana
       </CButton>
-      <CButton color="success">
+      <CButton
+          color="success"
+          :disabled="!informedConsentData.length || !formData.signatureString"
+          @click.prevent="saveInformedConsent"
+      >
         <CIcon icon="cil-pencil"/>
         Firmar Consentimiento
       </CButton>

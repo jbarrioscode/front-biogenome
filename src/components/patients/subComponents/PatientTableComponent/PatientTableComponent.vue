@@ -92,7 +92,10 @@ onMounted(() => {
           <CIcon icon="cil-trash"/>
         </CButton>
 
-        <PatientInformedConsentModal :patientId="data.value.id" />
+        <PatientInformedConsentModal
+            :patientId="data.value.id"
+            :patientHasProtocol="data.value.protocolos.length"
+        />
 <!--        <CButton
             class="edit-button"
             title="Firmar Consentimiento">

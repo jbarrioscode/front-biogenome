@@ -7,14 +7,15 @@ import {useDocumentTypesStore} from "@/stores/settings/documentTypesStore.ts";
 import {onMounted} from "vue";
 import {useSampleTypeStore} from "@/stores/sampleType/sampleTypeStore.ts";
 import {useProtocolStore} from "@/stores/protocols/protocolStore.ts";
-import {useAuthStore} from "@/stores/authentication/authStore.ts";
+import {useUserStore} from "@/stores/authentication/userStore.ts";
 
-const authStore = useAuthStore()
+const userStore = useUserStore()
 const documentTypesStore = useDocumentTypesStore()
 const protocolStore = useProtocolStore()
 const sampleTypeStore = useSampleTypeStore()
 
 onMounted(() => {
+  userStore.storeInfo()
   documentTypesStore.fetchDocumentTypes()
   protocolStore.fetchActiveProtocols(1)
   sampleTypeStore.fetchSampleTypes()
