@@ -7,9 +7,11 @@ import {gendersConstant} from "@/utils/constants/genders.constant.ts";
 import {bloodGroupConstant} from "@/utils/constants/bloodGroup.constant.ts";
 import {CButton} from "@coreui/vue/dist/esm/components/button";
 import PatientService from "@/services/patients/Patient.service.ts";
+import {usePatientStore} from "@/stores/patients/patientStore.ts";
 
 const swal = inject('$swal')
 
+const patientStore = usePatientStore()
 const documentTypesStore = useDocumentTypesStore()
 const documentTypes = ref(null)
 const loadingDocumentTypes = ref(null)
@@ -47,6 +49,7 @@ const savePatient = async () => {
       text: res.data.message,
       title: "Buen Trabajo!",
     })
+    await patientStore.fetchPatientsList()
 
   } catch (error) {
     swal.fire({

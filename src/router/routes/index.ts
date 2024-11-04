@@ -11,6 +11,10 @@ import SettingsMainComponent from "@/components/settings/SettingsMainComponent.v
 import UsersMainComponent from "@/components/settings/users/UsersMainComponent.vue";
 import RolesMainComponent from "@/components/settings/roles/RolesMainComponent.vue";
 import PermissionsMainComponent from "@/components/settings/permissions/PermissionsMainComponent.vue";
+import HeadquartersMainComponent from "@/components/settings/headquarters/HeadquartersMainComponent.vue";
+import PatientCreationMainComponent from "@/components/patients/patientCreation/PatientCreationMainComponent.vue";
+import PatientClinicalInformationMainComponent
+    from "@/components/patients/patientClinicalInformation/PatientClinicalInformationMainComponent.vue";
 
 const routesObject: any = [
     {
@@ -52,6 +56,18 @@ const routesObject: any = [
                 path: '/patients',
                 name: 'patients',
                 component: PatientMainComponent,
+                children: [
+                    {
+                        path: '/creation',
+                        name: 'creation',
+                        component: PatientCreationMainComponent,
+                    },
+                    {
+                        path: '/clinical-information',
+                        name: 'clinical-information',
+                        component: PatientClinicalInformationMainComponent,
+                    },
+                ]
             },
             {
                 path: '/samples',
@@ -86,7 +102,7 @@ const routesObject: any = [
                     {
                         path: '/headquarters',
                         name: 'headquarters',
-                        component: SettingsMainComponent,
+                        component: HeadquartersMainComponent,
                     }
                 ]
             },

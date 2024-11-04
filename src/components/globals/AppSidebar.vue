@@ -59,10 +59,21 @@ function redirectToViews(view: string) {
       <CNavTitle href="#">
         Pacientes & Muestras
       </CNavTitle>
-      <CNavItem href="#" @click.prevent="redirectToViews('patients')">
-        <CIcon customClassName="nav-icon" icon="cil-speedometer"/>
-        Pacientes
-      </CNavItem>
+
+      <CNavGroup>
+        <template #togglerContent>
+          <font-awesome-icon class="nav-icon" :icon="['fas', 'person']" />
+          Pacientes
+        </template>
+        <CNavItem href="#" @click.prevent="redirectToViews('creation')">
+          <span class="nav-icon"><span class="nav-icon-bullet"></span></span>
+          Crear Paciente
+        </CNavItem>
+        <CNavItem href="#" @click.prevent="redirectToViews('clinical-information')">
+          <span class="nav-icon"><span class="nav-icon-bullet"></span></span>
+          Información Clínica
+        </CNavItem>
+      </CNavGroup>
       <!-- End Patient Section -->
 
       <!-- Samples Section -->

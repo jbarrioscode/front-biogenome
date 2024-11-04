@@ -32,6 +32,14 @@ import FontAwesomeIcon from "@/components/icons"
 /* Vue Signature PAD */
 import Vue3Signature from "vue3-signature"
 
+/* Vue QuillEditor */
+import {QuillEditor} from "@vueup/vue-quill";
+import '@vueup/vue-quill/dist/vue-quill.snow.css';
+
+/* Vue Select */
+/*import VueSelect from "vue3-select-component";*/
+
+
 const app = createApp(App)
 app.use(pinia)
 app.use(router)
@@ -41,6 +49,7 @@ app.use(Vue3Signature)
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.component('table-lite', VueTableLite)
 app.component('pulse-loader', PulseLoader)
+app.component('QuillEditor', QuillEditor)
 app.provide('icons', icons)
 app.component('CIcon', CIcon)
 app.mount('#app')

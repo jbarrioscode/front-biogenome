@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import {ref} from 'vue'
 import {CButton} from "@coreui/vue/dist/esm/components/button";
-import {CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle} from "@coreui/vue/dist/esm/components/modal";
-import CreatePatientForm from "@/components/patients/subComponents/PatientMenuComponent/Forms/CreatePatientForm.vue";
+import {CModal, CModalBody, CModalHeader, CModalTitle} from "@coreui/vue/dist/esm/components/modal";
+import CreatePatientForm
+  from "@/components/patients/patientCreation/subComponents/PatientMenuComponent/Forms/CreatePatientForm.vue";
 
 const visibleStaticBackdropDemo = ref(false)
 

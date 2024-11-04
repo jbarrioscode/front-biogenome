@@ -3,7 +3,9 @@
 </script>
 
 <template>
-  <router-view />
+<div>
+  <p>Menu</p>
+</div>
 </template>
 
 <style scoped>

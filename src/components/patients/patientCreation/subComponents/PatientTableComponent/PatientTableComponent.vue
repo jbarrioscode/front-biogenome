@@ -4,7 +4,9 @@ import {onMounted, reactive} from "vue";
 import {CButton} from "@coreui/vue/dist/esm/components/button";
 import {usePatientStore} from "@/stores/patients/patientStore.ts";
 import PatientInformedConsentModal
-  from "@/components/patients/subComponents/PatientTableComponent/Modals/PatientInformedConsentModal.vue";
+  from "@/components/patients/patientCreation/subComponents/PatientTableComponent/Modals/PatientInformedConsent/PatientInformedConsentModal.vue";
+import PatientSurveyModal
+  from "@/components/patients/patientCreation/subComponents/PatientTableComponent/Modals/PatientSurvey/PatientSurveyModal.vue";
 
 const patientStore = usePatientStore()
 
@@ -81,6 +83,7 @@ onMounted(() => {
         :total="table.totalRecordCount"
         :sortable="table.sortable"
         @is-finished="table.isLoading = false"
+        size="small"
     >
 
       <template v-slot:actions="data">
@@ -94,18 +97,13 @@ onMounted(() => {
 
         <PatientInformedConsentModal
             :patientId="data.value.id"
-            :patientHasProtocol="data.value.protocolos.length"
+            :patientHasProtocol="!!data.value.protocolos.length"
         />
-<!--        <CButton
-            class="edit-button"
-            title="Firmar Consentimiento">
-          <CIcon icon="cil-pencil"/>
-        </CButton>-->
 
-        <CButton
-            title="Diligenciar Historia">
-          <CIcon icon="cil-list"/>
-        </CButton>
+        <PatientSurveyModal
+            :patientId="data.value.id"
+            :patientProtocol="data.value.protocolos.length ? data.value.protocolos[0].id_protocolo : 0"
+        />
 
       </template>
 

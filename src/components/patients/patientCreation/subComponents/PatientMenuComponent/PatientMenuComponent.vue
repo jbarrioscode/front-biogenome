@@ -2,7 +2,8 @@
 
 import {CCard, CCardBody} from "@coreui/vue/dist/esm/components/card";
 import {CButton} from "@coreui/vue/dist/esm/components/button";
-import CreatePatientModal from "@/components/patients/subComponents/PatientMenuComponent/Modals/CreatePatientModal.vue";
+import CreatePatientModal
+  from "@/components/patients/patientCreation/subComponents/PatientMenuComponent/Modals/CreatePatientModal.vue";
 import {usePatientStore} from "@/stores/patients/patientStore.ts";
 
 const patientStore = usePatientStore()

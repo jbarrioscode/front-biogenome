@@ -6,3 +6,9 @@ export interface IPatients {
     email: String,
     telefono_celular: Number
 }
+
+export interface IPatientInformedConsent {
+    tipo_consentimiento_informado_id: Number,
+    paciente_id: Number,
+    firma: String
+}

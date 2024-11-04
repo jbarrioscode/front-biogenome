@@ -2,13 +2,17 @@
 
 import {CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle} from "@coreui/vue/dist/esm/components/modal";
 import {CButton} from "@coreui/vue/dist/esm/components/button";
-import {onMounted, reactive, ref} from "vue";
+import {inject, onMounted, reactive, ref} from "vue";
 import {CCol, CRow} from "@coreui/vue/dist/esm/components/grid";
 import {useSampleTypeStore} from "@/stores/sampleType/sampleTypeStore.ts";
 import InformedConsentService from "@/services/informedConsent/InformedConsent.service.ts";
 import {useUserStore} from "@/stores/authentication/userStore.ts";
 import {useProtocolStore} from "@/stores/protocols/protocolStore.ts";
 import {CButtonGroup} from "@coreui/vue/dist/esm/components/button-group";
+import {IPatientInformedConsent} from "@/utils/interfaces/patients/patients.ts";
+import {usePatientStore} from "@/stores/patients/patientStore.ts";
+
+const Swal = inject('$swal')
 
 const props = defineProps({
   patientId: Number,
@@ -16,6 +20,7 @@ const props = defineProps({
 })
 
 const protocolStore = useProtocolStore()
+const patientStore = usePatientStore()
 
 const loaderParams = ref({
   color: '#4fc08d',
@@ -28,6 +33,7 @@ const formData = reactive(({
   protocolSelected: null,
   signatureString: null
 }))
+const isSavingInformedConsent = ref(false)
 
 /* Signature PAD Variables */
 const signaturePadState = reactive({
@@ -70,13 +76,36 @@ const getInformedConsentBySampleID = async (protocolID: number) => {
 }
 
 const saveInformedConsent = async () => {
-  const payload = {
-    tipo_consentimiento_informado_id: formData.protocolSelected,
-    paciente_id: props.patientId,
-    firma: formData.signatureString
+  isSavingInformedConsent.value = true
+  try {
+    const payload: IPatientInformedConsent = {
+      tipo_consentimiento_informado_id: formData.protocolSelected,
+      paciente_id: props.patientId,
+      firma: formData.signatureString
+    }
+
+    const {data} = await InformedConsentService.savePatientInformedConsent(payload)
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Buen trabajo!',
+      text: data.message
+    })
+    isSavingInformedConsent.value = false
+    visibleStaticBackdropDemo.value = false
+    await patientStore.fetchPatientsList()
+
+  } catch (error) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oppps!',
+      text: error.response.message
+    })
+    isSavingInformedConsent.value = false
+  } finally {
+    isSavingInformedConsent.value = false
   }
 
-  console.log(payload)
 }
 
 </script>
@@ -86,11 +115,12 @@ const saveInformedConsent = async () => {
   <CButton
       size="sm"
       shape="rounded-pill"
-      class="edit-button"
+      :class="`${ patientHasProtocol ? 'btn-success' : 'edit-button'} border-0`"
       @click="() => { visibleStaticBackdropDemo = true }"
       :disabled="patientHasProtocol"
+      title="Diligenciar Consentimiento"
   >
-    <CIcon icon="cil-pencil"/>
+    <font-awesome-icon :icon="['fas', 'file-signature']"/>
   </CButton>
 
   <CModal
@@ -204,11 +234,11 @@ const saveInformedConsent = async () => {
       </CButton>
       <CButton
           color="success"
-          :disabled="!informedConsentData.length || !formData.signatureString"
+          :disabled="!informedConsentData.length || !formData.signatureString || isSavingInformedConsent"
           @click.prevent="saveInformedConsent"
       >
         <CIcon icon="cil-pencil"/>
-        Firmar Consentimiento
+        {{ isSavingInformedConsent ? 'Guardando Consentimiento' : 'Firmar Consentimiento' }}
       </CButton>
     </CModalFooter>
   </CModal>

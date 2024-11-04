@@ -52,7 +52,7 @@ const saveUser = async () => {
     })
 
   } catch (error) {
-    swal.fire({
+    Swal.fire({
       icon: 'error',
       text: error.response.message,
     })
