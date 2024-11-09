@@ -144,6 +144,9 @@ function redirectToViews(view: string) {
         <CNavItem href="#" @click.prevent="redirectToViews('users')">
           <span class="nav-icon"><span class="nav-icon-bullet"></span></span> Protocolos
         </CNavItem>
+        <CNavItem href="#" @click.prevent="redirectToViews('informed-consents')">
+          <span class="nav-icon"><span class="nav-icon-bullet"></span></span> Consentimientos
+        </CNavItem>
       </CNavGroup>
       <!-- End Reports Section -->
 

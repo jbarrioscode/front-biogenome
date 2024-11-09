@@ -63,8 +63,8 @@ onMounted(() => {
 
         <CButton
             class="delete-button"
-            :title="`Eliminar Sede ${data.value.document}`">
-          <CIcon icon="cil-trash"/>
+            :title="`Eliminar: ${data.value.nombre}`">
+          <font-awesome-icon :icon="['fas', 'trash']" />
         </CButton>
 
       </template>

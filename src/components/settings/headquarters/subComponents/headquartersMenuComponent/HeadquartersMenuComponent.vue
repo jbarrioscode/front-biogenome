@@ -18,7 +18,7 @@ const headquartersStore = useHeadquartersStore()
       <div class="d-grid gap-2 d-md-flex justify-content-md-end">
 
         <CButton size="sm" shape="rounded-pill" color="success">
-          <CIcon icon="cil-cloud-download" />
+          <font-awesome-icon :icon="['fas', 'download']" />
           Descargar Reporte
         </CButton>
 
@@ -27,7 +27,7 @@ const headquartersStore = useHeadquartersStore()
         <!-- End Create Headquarters Modal -->
 
         <CButton size="sm" shape="rounded-pill" color="warning" @click="() => headquartersStore.fetchHeadquarters()">
-          <CIcon icon="cil-reload" />
+          <font-awesome-icon :icon="['fas', 'sync']" />
           Recargar
         </CButton>
 

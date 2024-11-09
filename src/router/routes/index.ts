@@ -15,6 +15,7 @@ import HeadquartersMainComponent from "@/components/settings/headquarters/Headqu
 import PatientCreationMainComponent from "@/components/patients/patientCreation/PatientCreationMainComponent.vue";
 import PatientClinicalInformationMainComponent
     from "@/components/patients/patientClinicalInformation/PatientClinicalInformationMainComponent.vue";
+import InformedConsentsMainComponent from "@/components/settings/informedConsents/InformedConsentsMainComponent.vue";
 
 const routesObject: any = [
     {
@@ -103,6 +104,11 @@ const routesObject: any = [
                         path: '/headquarters',
                         name: 'headquarters',
                         component: HeadquartersMainComponent,
+                    },
+                    {
+                        path: '/informed-consents',
+                        name: 'informed-consents',
+                        component: InformedConsentsMainComponent,
                     }
                 ]
             },

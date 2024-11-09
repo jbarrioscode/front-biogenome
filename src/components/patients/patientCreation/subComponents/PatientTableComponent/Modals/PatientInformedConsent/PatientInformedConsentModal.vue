@@ -16,7 +16,8 @@ const Swal = inject('$swal')
 
 const props = defineProps({
   patientId: Number,
-  patientHasProtocol: Boolean
+  patientHasProtocol: Boolean,
+  patientProtocol: Object
 })
 
 const protocolStore = useProtocolStore()
@@ -117,7 +118,6 @@ const saveInformedConsent = async () => {
       shape="rounded-pill"
       :class="`${ patientHasProtocol ? 'btn-success' : 'edit-button'} border-0`"
       @click="() => { visibleStaticBackdropDemo = true }"
-      :disabled="patientHasProtocol"
       title="Diligenciar Consentimiento"
   >
     <font-awesome-icon :icon="['fas', 'file-signature']"/>
@@ -137,6 +137,12 @@ const saveInformedConsent = async () => {
     </CModalHeader>
     <CModalBody>
 
+<!--      <CRow>
+        <CCol>
+          {{ patientProtocol }}
+        </CCol>
+      </CRow>-->
+
       <!-- Protocol Selection Section -->
       <CRow class="mb-4">
         <CCol v-if="protocolStore.isLoadingProtocol" class="text-center">
@@ -150,7 +156,7 @@ const saveInformedConsent = async () => {
 
           <div class="radio-tile-group">
 
-            <div class="input-container" v-for="item in protocolStore.protocols" :key="item.protocolo_id">
+            <div class="input-container" v-for="(item, index) in protocolStore.protocols" :key="item.protocolo_id">
               <input
                   id="walk"
                   class="radio-button"
@@ -160,6 +166,7 @@ const saveInformedConsent = async () => {
                   v-model="formData.protocolSelected"
                   @change.prevent="getInformedConsentBySampleID(item.protocolo_id)"
               >
+              {{ patientProtocol.id_protocolo }}
               <div class="radio-tile">
                 <div class="icon walk-icon">
                   <font-awesome-icon :icon="['fas', 'microscope']"/>
@@ -184,6 +191,7 @@ const saveInformedConsent = async () => {
 
         <CCol v-else>
           <h5>CONSENTIMIENTO INFORMADO</h5>
+
           <pre v-if="informedConsentData.length" class="text-center">
             {{ informedConsentData[0] ? informedConsentData[0].consentimiento : '' }}
           </pre>

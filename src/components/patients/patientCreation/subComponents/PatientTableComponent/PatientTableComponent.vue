@@ -98,6 +98,7 @@ onMounted(() => {
         <PatientInformedConsentModal
             :patientId="data.value.id"
             :patientHasProtocol="!!data.value.protocolos.length"
+            :patientProtocol="data.value.protocolos"
         />
 
         <PatientSurveyModal
