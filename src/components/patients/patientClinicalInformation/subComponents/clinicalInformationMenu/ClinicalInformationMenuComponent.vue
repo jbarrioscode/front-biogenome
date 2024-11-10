@@ -2,6 +2,10 @@
 
 import {CCard, CCardBody} from "@coreui/vue/dist/esm/components/card";
 import {CButton} from "@coreui/vue/dist/esm/components/button";
+import {usePatientClinicalInformationStore} from "@/stores/patients/patientClinicalInformationStore.ts";
+
+const patientWCIStore = usePatientClinicalInformationStore()
+
 </script>
 
 <template>
@@ -15,7 +19,12 @@ import {CButton} from "@coreui/vue/dist/esm/components/button";
           Descargar Reporte
         </CButton>
 
-        <CButton size="sm" shape="rounded-pill" color="warning">
+        <CButton
+            size="sm"
+            shape="rounded-pill"
+            color="warning"
+            @click.prevent="() => patientWCIStore.fetchPatientsWithOutClinicalInformation()"
+        >
           <font-awesome-icon :icon="['fas', 'sync']"/>
           Recargar
         </CButton>

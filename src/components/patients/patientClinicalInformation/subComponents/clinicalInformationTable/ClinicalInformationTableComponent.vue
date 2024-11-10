@@ -1,9 +1,12 @@
 <script setup lang="ts">
 // Init Your table settings
-import {reactive} from "vue";
+import {onMounted, reactive} from "vue";
 import {CButton} from "@coreui/vue/dist/esm/components/button";
 import ClinicalInformationModal
   from "@/components/patients/patientClinicalInformation/subComponents/clinicalInformationTable/Modals/ClinicalInformationModal.vue";
+import {usePatientClinicalInformationStore} from "@/stores/patients/patientClinicalInformationStore.ts";
+
+const patientWCIStore = usePatientClinicalInformationStore()
 
 const table = reactive({
   isLoading: false,
@@ -12,12 +15,6 @@ const table = reactive({
       label: "ID",
       field: "id",
       width: '3%',
-      sortable: true,
-      isKey: true,
-    },
-    {
-      label: "Código Paciente",
-      field: "patCode",
       sortable: true,
       isKey: true,
     },
@@ -35,23 +32,18 @@ const table = reactive({
     },
     {
       label: "Código de Muestra",
-      field: "grupo_sanguineo",
+      field: "code_paciente",
       sortable: true,
       isKey: true,
     },
     {
       label: "Sede de Muestra",
-      field: "email",
+      field: "sede_toma_muestra",
       sortable: true,
     },
     {
       label: "Fecha de Muestra",
-      field: "telefono_celular",
-      sortable: true,
-    },
-    {
-      label: "Estado Actual",
-      field: "telefono_celular_a",
+      field: "created_at",
       sortable: true,
     },
     {
@@ -59,23 +51,16 @@ const table = reactive({
       field: "actions",
     }
   ],
-  rows: [
-    {
-      id: 1,
-      patCode: 'Xdsj8',
-      tipo_doc: 'CC',
-      numero_documento: '11111111',
-      grupo_sanguineo: '874',
-      email: 'SEDE VIVA',
-      telefono_celular: '09-11-2024',
-      telefono_celular_a: 'FORMULARIO INGRESADO',
-    }
-  ],
+  rows: [],
   totalRecordCount: 0,
   sortable: {
     order: "id",
     sort: "asc",
   },
+})
+
+onMounted(() => {
+  patientWCIStore.fetchPatientsWithOutClinicalInformation()
 })
 </script>
 
@@ -83,13 +68,12 @@ const table = reactive({
   <div>
     <table-lite
         :is-slot-mode="true"
-        :is-loading="table.isLoading"
+        :is-loading="patientWCIStore.isLoadingPatientWCI"
         :columns="table.columns"
-        :rows="table.rows"
+        :rows="patientWCIStore.patientWCI"
         :total="table.totalRecordCount"
         :sortable="table.sortable"
-        @is-finished="table.isLoading = false"
-        size="small"
+        size="sm"
     >
 
       <template v-slot:actions="data">
