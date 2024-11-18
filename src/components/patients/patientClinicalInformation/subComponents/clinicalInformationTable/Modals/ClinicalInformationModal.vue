@@ -18,6 +18,8 @@ import ImagesForm
   from "@/components/patients/patientClinicalInformation/subComponents/clinicalInformationTable/Forms/Images/ImagesForm.vue";
 import PharmacologicalForm
   from "@/components/patients/patientClinicalInformation/subComponents/clinicalInformationTable/Forms/Background/PharmacologicalForm.vue";
+import HematologicalLaboratoriesForm
+  from "@/components/patients/patientClinicalInformation/subComponents/clinicalInformationTable/Forms/Laboratories/HematologicalLaboratoriesForm.vue";
 
 const visibleStaticBackdropDemo = ref(false)
 const tabPanePillsActiveKey = ref(1)
@@ -103,7 +105,7 @@ const tabPanePillsActiveKey = ref(1)
               <p>Otros Laboratorios</p>
             </CTabPane>
             <CTabPane role="tabpanel" aria-labelledby="pathological-tab" :visible="tabPanePillsActiveKey === 9">
-              <p>Laboratorios Hematos</p>
+              <HematologicalLaboratoriesForm />
             </CTabPane>
             <CTabPane role="tabpanel" aria-labelledby="pathological-tab" :visible="tabPanePillsActiveKey === 10">
               <p>Laboratorios Bioquímico</p>

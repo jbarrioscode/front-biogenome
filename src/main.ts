@@ -39,6 +39,10 @@ import '@vueup/vue-quill/dist/vue-quill.snow.css';
 /* Vue Select */
 import VueSelect from "vue3-select-component";
 
+/** Vue Input Multi Select */
+import VueMultiselect from "vue-multiselect";
+import 'vue-multiselect/dist/vue-multiselect.css'
+
 /** Vue DaysJs */
 import * as dayjs from "dayjs";
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -57,6 +61,7 @@ app.component('table-lite', VueTableLite)
 app.component('pulse-loader', PulseLoader)
 app.component('QuillEditor', QuillEditor)
 app.component('custom-select', VueSelect)
+app.component('VueMultiselect', VueMultiselect)
 app.provide('icons', icons)
 app.component('CIcon', CIcon)
 
