@@ -8,10 +8,6 @@ import {CNav, CNavItem, CNavLink} from "@coreui/vue/dist/esm/components/nav";
 import {CTabContent, CTabPane} from "@coreui/vue/dist/esm/components/tabs";
 import {CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle} from "@coreui/vue/dist/esm/components/dropdown";
 import {clinicalInformationTabs} from "@/utils/constants/clinicalInformationTabs.ts";
-import EvolutionForm
-  from "@/components/patients/patientClinicalInformation/subComponents/clinicalInformationTable/Forms/Background/EvolutionForm.vue";
-import BackgroundForm
-  from "@/components/patients/patientClinicalInformation/subComponents/clinicalInformationTable/Forms/Background/BackgroundForm.vue";
 import PathologicalForm
   from "@/components/patients/patientClinicalInformation/subComponents/clinicalInformationTable/Forms/Background/PathologicalForm.vue";
 import ImagesForm
@@ -20,6 +16,16 @@ import PharmacologicalForm
   from "@/components/patients/patientClinicalInformation/subComponents/clinicalInformationTable/Forms/Background/PharmacologicalForm.vue";
 import HematologicalLaboratoriesForm
   from "@/components/patients/patientClinicalInformation/subComponents/clinicalInformationTable/Forms/Laboratories/HematologicalLaboratoriesForm.vue";
+import BiochemicalLaboratoriesForm
+  from "@/components/patients/patientClinicalInformation/subComponents/clinicalInformationTable/Forms/Laboratories/BiochemicalLaboratoriesForm.vue";
+import HormonalLaboratoriesForm
+  from "@/components/patients/patientClinicalInformation/subComponents/clinicalInformationTable/Forms/Laboratories/HormonalLaboratoriesForm.vue";
+
+
+const props = defineProps({
+  patientCode: String,
+  sampleID: Number
+})
 
 const visibleStaticBackdropDemo = ref(false)
 const tabPanePillsActiveKey = ref(1)
@@ -47,7 +53,7 @@ const tabPanePillsActiveKey = ref(1)
   >
     <CModalHeader>
       <CModalTitle id="StaticBackdropExampleLabel">
-        Ventana: Información Clínica del Paciente -
+        Ventana: Información Clínica del Paciente - {{ props.patientCode }}
       </CModalTitle>
     </CModalHeader>
     <CModalBody>
@@ -89,36 +95,36 @@ const tabPanePillsActiveKey = ref(1)
       <CRow class="mb-5">
         <CCol>
           <CTabContent>
-            <CTabPane role="tabpanel" aria-labelledby="evolution-tab" :visible="tabPanePillsActiveKey === 1">
+<!--            <CTabPane role="tabpanel" aria-labelledby="evolution-tab" :visible="tabPanePillsActiveKey === 1">
               <EvolutionForm />
-            </CTabPane>
-            <CTabPane role="tabpanel" aria-labelledby="background-tab" :visible="tabPanePillsActiveKey === 3">
+            </CTabPane>-->
+<!--            <CTabPane role="tabpanel" aria-labelledby="background-tab" :visible="tabPanePillsActiveKey === 3">
               <BackgroundForm />
-            </CTabPane>
+            </CTabPane>-->
             <CTabPane role="tabpanel" aria-labelledby="pathological-tab" :visible="tabPanePillsActiveKey === 4">
               <PathologicalForm />
             </CTabPane>
-            <CTabPane role="tabpanel" aria-labelledby="pathological-tab" :visible="tabPanePillsActiveKey === 5">
+            <CTabPane role="tabpanel" aria-labelledby="pharmacological-tab" :visible="tabPanePillsActiveKey === 5">
               <PharmacologicalForm />
             </CTabPane>
-            <CTabPane role="tabpanel" aria-labelledby="pathological-tab" :visible="tabPanePillsActiveKey === 6">
+            <CTabPane role="tabpanel" aria-labelledby="others-tab" :visible="tabPanePillsActiveKey === 6">
               <p>Otros Laboratorios</p>
             </CTabPane>
-            <CTabPane role="tabpanel" aria-labelledby="pathological-tab" :visible="tabPanePillsActiveKey === 9">
+            <CTabPane role="tabpanel" aria-labelledby="hematological-tab" :visible="tabPanePillsActiveKey === 9">
               <HematologicalLaboratoriesForm />
             </CTabPane>
-            <CTabPane role="tabpanel" aria-labelledby="pathological-tab" :visible="tabPanePillsActiveKey === 10">
-              <p>Laboratorios Bioquímico</p>
+            <CTabPane role="tabpanel" aria-labelledby="biochemical-tab" :visible="tabPanePillsActiveKey === 10">
+              <BiochemicalLaboratoriesForm />
             </CTabPane>
-            <CTabPane role="tabpanel" aria-labelledby="pathological-tab" :visible="tabPanePillsActiveKey === 11">
-              <p>Laboratorios Hormonales</p>
+            <CTabPane role="tabpanel" aria-labelledby="hormonal-tab" :visible="tabPanePillsActiveKey === 11">
+              <HormonalLaboratoriesForm />
             </CTabPane>
-            <CTabPane role="tabpanel" aria-labelledby="pathological-tab" :visible="tabPanePillsActiveKey === 12">
-              <ImagesForm />
+            <CTabPane role="tabpanel" aria-labelledby="images-tab" :visible="tabPanePillsActiveKey === 12">
+              <ImagesForm :sampleID="sampleID" />
             </CTabPane>
-            <CTabPane role="tabpanel" aria-labelledby="pathological-tab" :visible="tabPanePillsActiveKey === 13">
+<!--            <CTabPane role="tabpanel" aria-labelledby="pathological-tab" :visible="tabPanePillsActiveKey === 13">
               <p>Anexos</p>
-            </CTabPane>
+            </CTabPane>-->
 
           </CTabContent>
         </CCol>

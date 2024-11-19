@@ -1,30 +1,31 @@
 <script setup lang="ts">
+
 import {ref} from "vue";
+import dayjs from "dayjs";
 import {CCol, CRow} from "@coreui/vue/dist/esm/components/grid";
 import {CForm, CFormInput, CFormLabel} from "@coreui/vue/dist/esm/components/form";
-import dayjs from "dayjs";
-import {biochemicalLabsOptions} from "@/utils/constants/biochemicalLabsOptions.ts";
-import {CButton} from "@coreui/vue/dist/esm/components/button";
 import {CCard, CCardBody, CCardHeader} from "@coreui/vue/dist/esm/components/card";
+import {CButton} from "@coreui/vue/dist/esm/components/button";
+import {hormonalLabsOptions} from "@/utils/constants/hormonalLabsOptions.ts";
 
 const formDate = ref(null)
 const formValues = ref({})
-const biochemicalHistory = ref([])
+const hormonalHistory = ref([])
 
 const addItemToLabArray = () => {
   const newData = {
     labDate: formDate.value,
-    values: biochemicalLabsOptions.map(option => ({
+    values: hormonalLabsOptions.map(option => ({
       labType: option.label,
       valueLab: `${formValues.value[option.model] || 0} ${option.unity}`,
     }))
   }
-  biochemicalHistory.value.push(newData)
+  hormonalHistory.value.push(newData)
   clearFields()
 }
 
 const removeLabFromArray = (index: number) => {
-  biochemicalHistory.value.splice(index, 1)
+  hormonalHistory.value.splice(index, 1)
 }
 
 function clearFields() {
@@ -32,13 +33,12 @@ function clearFields() {
   formValues.value = {}
 }
 function clearArray() {
-  biochemicalHistory.value = []
+  hormonalHistory.value = []
 }
 
 </script>
 
 <template>
-
   <CRow>
     <CCol md="7" class="border-end">
 
@@ -59,7 +59,7 @@ function clearArray() {
 
         <CRow
             class="mb-2"
-            v-for="(item, index) in biochemicalLabsOptions"
+            v-for="(item, index) in hormonalLabsOptions"
             :key="item.value"
         >
           <CFormLabel
@@ -110,11 +110,11 @@ function clearArray() {
 
     <CCol md="5">
 
-      <CCard v-if="!biochemicalHistory.length">
+      <CCard v-if="!hormonalHistory.length">
         <CCardBody class="text-center">No hay Laboratorios aún</CCardBody>
       </CCard>
 
-      <CCard v-for="(item, index) in biochemicalHistory" :key="item" class="mb-2" v-else>
+      <CCard v-for="(item, index) in hormonalHistory" :key="item" class="mb-2" v-else>
         <CCardHeader>
           <div class="d-flex justify-content-between">
             <p class="mb-0">Laboratorio del día: {{ item.labDate }}</p>
@@ -142,7 +142,6 @@ function clearArray() {
       </CCard>
     </CCol>
   </CRow>
-
 </template>
 
 <style scoped>

@@ -78,7 +78,10 @@ onMounted(() => {
 
       <template v-slot:actions="data">
 
-        <ClinicalInformationModal />
+        <ClinicalInformationModal
+            :patientCode="data.value.code_paciente"
+            :sampleID="data.value.id"
+        />
 
       </template>
 

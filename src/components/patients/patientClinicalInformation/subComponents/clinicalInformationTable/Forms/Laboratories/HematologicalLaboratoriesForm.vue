@@ -97,7 +97,8 @@ function clearFields() {
         <CCol md="12">
           <div class="d-grid gap-2 d-md-flex justify-content-md-end">
             <CButton
-                color="outline-warning"
+                color="warning"
+                variant="outline"
                 shape="rounded-pill"
                 class="me-md-2"
                 type="reset"
@@ -106,7 +107,8 @@ function clearFields() {
               Limpiar
             </CButton>
             <CButton
-                color="outline-primary"
+                color="primary"
+                variant="outline"
                 shape="rounded-pill"
                 type="button"
                 @click.prevent="addLabsToArray"

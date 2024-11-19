@@ -1,20 +1,20 @@
 export const clinicalInformationTabs = [
-    {
+    /*{
         name: 'Evolución',
         value: 1,
         status: true,
         children: []
-    },
+    },*/
     {
         name: 'Antecedentes',
         value: 2,
         status: false,
         children: [
-            {
+            /*{
                 name: 'Hallazgos',
                 value: 3,
                 status: true
-            },
+            },*/
             {
                 name: 'Patologicos',
                 value: 4,
@@ -25,13 +25,13 @@ export const clinicalInformationTabs = [
                 value: 5,
                 status: true
             },
-            {
+            /*{
                 name: 'Otros Labs',
                 value: 6,
                 status: true
-            },
+            },*/
             {
-                name: 'Otros',
+                name: 'Otros Antecedentes',
                 value: 7,
                 status: true
             },
@@ -65,10 +65,10 @@ export const clinicalInformationTabs = [
         status: true,
         children: []
     },
-    {
+    /*{
         name: 'Anexos',
         value: 13,
         status: true,
         children: []
-    },
+    },*/
 ]
