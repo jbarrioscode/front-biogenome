@@ -52,7 +52,7 @@ async function saveData() {
     muestra_id: props.sampleID,
     datos: imagesHistory.value,
   }
-  console.log(payload)
+  //console.log(payload)
 
   try {
     const response = await PatientClinicalInformationService.savePatientClinicalInformation(payload);

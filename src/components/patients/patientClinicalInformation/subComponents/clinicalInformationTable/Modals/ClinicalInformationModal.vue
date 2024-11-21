@@ -102,22 +102,22 @@ const tabPanePillsActiveKey = ref(1)
               <BackgroundForm />
             </CTabPane>-->
             <CTabPane role="tabpanel" aria-labelledby="pathological-tab" :visible="tabPanePillsActiveKey === 4">
-              <PathologicalForm />
+              <PathologicalForm :sampleID="sampleID" />
             </CTabPane>
             <CTabPane role="tabpanel" aria-labelledby="pharmacological-tab" :visible="tabPanePillsActiveKey === 5">
-              <PharmacologicalForm />
+              <PharmacologicalForm :sampleID="sampleID" />
             </CTabPane>
             <CTabPane role="tabpanel" aria-labelledby="others-tab" :visible="tabPanePillsActiveKey === 6">
               <p>Otros Laboratorios</p>
             </CTabPane>
             <CTabPane role="tabpanel" aria-labelledby="hematological-tab" :visible="tabPanePillsActiveKey === 9">
-              <HematologicalLaboratoriesForm />
+              <HematologicalLaboratoriesForm :sampleID="sampleID" />
             </CTabPane>
             <CTabPane role="tabpanel" aria-labelledby="biochemical-tab" :visible="tabPanePillsActiveKey === 10">
-              <BiochemicalLaboratoriesForm />
+              <BiochemicalLaboratoriesForm :sampleID="sampleID" />
             </CTabPane>
             <CTabPane role="tabpanel" aria-labelledby="hormonal-tab" :visible="tabPanePillsActiveKey === 11">
-              <HormonalLaboratoriesForm />
+              <HormonalLaboratoriesForm :sampleID="sampleID" />
             </CTabPane>
             <CTabPane role="tabpanel" aria-labelledby="images-tab" :visible="tabPanePillsActiveKey === 12">
               <ImagesForm :sampleID="sampleID" />

@@ -1,10 +1,26 @@
 <script setup lang="ts">
 
-import {reactive, ref} from "vue";
+import {inject, reactive, ref} from "vue";
 import {CButton} from "@coreui/vue/dist/esm/components/button";
 import {CForm, CFormInput, CFormLabel} from "@coreui/vue/dist/esm/components/form";
 import {CCol} from "@coreui/vue/dist/esm/components/grid";
 import {everyHowOften} from "@/utils/constants/everyHowOften.constant.ts";
+import {drugsList} from "@/utils/constants/drugList.ts";
+import {useUserStore} from "@/stores/authentication/userStore.ts";
+import PatientClinicalInformationService from "@/services/patients/PatientClinicalInformation.service.ts";
+import dayjs from "dayjs";
+import {CListGroup, CListGroupItem} from "@coreui/vue/dist/esm/components/list-group";
+
+const Swal = inject('$swal')
+const today = dayjs()
+
+const userStore = useUserStore()
+const props = defineProps({
+  sampleID: {
+    type: Number,
+    required: true
+  }
+})
 
 const formData = reactive({
   selectedDrug: null,
@@ -13,49 +29,79 @@ const formData = reactive({
 })
 
 const pharmacologicalHistory = ref([])
-
-const drugList = ref([
-  {
-    label: "ALERCET ® JARABE",
-    value: "ALERCET ® JARABE",
-  },
-  {
-    label: "BRONCHO-VAXOM®  CAPSULAS ADULTOS",
-    value: "BRONCHO-VAXOM®  CAPSULAS ADULTOS",
-  },
-  {
-    label: "AZITROMICINA 500MG.",
-    value: "AZITROMICINA 500MG.",
-  },
-  {
-    label: "AZITROMICINA MK 200 MG\/ 5 ML POLVO PARA SUSPENSION",
-    value: "AZITROMICINA MK 200 MG\/ 5 ML POLVO PARA SUSPENSION",
-  },
-  {
-    label: "GLIBENCLAMIDA 5MG TABLETAS",
-    value: "GLIBENCLAMIDA 5MG TABLETAS",
-  },
-  {
-    label: "B-CORT ® 50",
-    value: "B-CORT ® 50",
-  },
-])
+const isSavingData = ref(false)
 
 function addItemToArray() {
-  pharmacologicalHistory.value.push({...formData})
+
+  if (!formData.selectedDrug?.DescripcionComercial || !formData.dosage || !formData.frequency) {
+    Swal.fire({
+      icon: "warning",
+      title: 'Debe diligenciar las variables completas!'
+    })
+    return
+  }
+
+  pharmacologicalHistory.value.push({
+    ...formData,
+    selectedDrug: formData.selectedDrug.DescripcionComercial
+  })
   clearFields()
 }
 
-function clearFields(): void {
+function removeItemFromArray(itemIndex: number) {
+  pharmacologicalHistory.value.splice(itemIndex, 1)
+}
+
+async function saveData() {
+
+  isSavingData.value = true
+  const payload = {
+    user_id: userStore.id,
+    muestra_id: props.sampleID,
+    datos: formatObject(pharmacologicalHistory.value),
+  }
+
+  console.log(payload)
+
+  try {
+
+    const response = await PatientClinicalInformationService.savePatientClinicalInformation(payload);
+    Swal.fire({
+      icon: "success",
+      title: response.data.message,
+    });
+    isSavingData.value = false
+    clearFields()
+    clearArray()
+  } catch (error) {
+    isSavingData.value = false
+    Swal.fire({
+      icon: "error",
+      title: error?.response?.message || "Ha Ocurrido un Error.",
+    })
+  }
+}
+
+function formatObject(array) {
+  const result = []
+  array.forEach(item => {
+    result.push({
+      fecha: today.format('YYYY-MM-DD'),
+      respuesta: item.selectedDrug.toUpperCase() + ';' + item.dosage + ';' + item.frequency,
+      pregunta_clinica_id: 2,
+    })
+  })
+  return result
+}
+
+function clearFields() {
   formData.selectedDrug = null
   formData.dosage = 0
   formData.frequency = null
 }
 
-function saveData(): void {
-  {
-    alert('acá Farmacologico')
-  }
+function clearArray() {
+  pharmacologicalHistory.value = []
 }
 
 </script>
@@ -65,10 +111,14 @@ function saveData(): void {
 
     <CCol md="5" class="mb-3">
       <CFormLabel for="">Seleccione el Medicamento:</CFormLabel>
-      <custom-select
+      <VueMultiselect
+          id="input-drug"
           v-model="formData.selectedDrug"
-          :options="drugList"
-          placeholder="Seleccione la opción"
+          :close-on-select="true"
+          :options="drugsList"
+          label="DescripcionComercial"
+          placeholder="Seleccione el medicamento"
+          track-by="DescripcionComercial"
       />
     </CCol>
 
@@ -99,10 +149,24 @@ function saveData(): void {
       </CButton>
     </CCol>
 
-    <CCol md="12">
-      <pre>
-        {{ pharmacologicalHistory }}
-      </pre>
+    <CCol md="12" class="mb-5">
+      <CListGroup>
+        <CListGroupItem v-for="(item, index) in pharmacologicalHistory" :key="item">
+
+          <div class="d-flex justify-content-between align-items-center">
+            <p class="mb-0">{{ item.selectedDrug }}</p>
+            <p class="mb-0">Dosis: {{ item.dosage }}</p>
+            <p class="mb-0">{{ item.frequency }}</p>
+            <CButton
+                color="danger"
+                @click.prevent="removeItemFromArray(index)"
+            >
+              <font-awesome-icon :icon="['fas', 'trash']"/>
+            </CButton>
+          </div>
+
+        </CListGroupItem>
+      </CListGroup>
     </CCol>
 
 
@@ -112,7 +176,12 @@ function saveData(): void {
           <font-awesome-icon :icon="['fas', 'brush']"/>
           Limpiar
         </CButton>
-        <CButton shape="rounded-pill" color="primary" type="submit">
+        <CButton
+            shape="rounded-pill"
+            color="primary"
+            type="submit"
+            :disabled="!pharmacologicalHistory.length"
+        >
           <font-awesome-icon :icon="['fas', 'floppy-disk']"/>
           Guardar Registro Patológico
         </CButton>
