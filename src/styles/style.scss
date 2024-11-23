@@ -1,0 +1,17 @@
+@import "@coreui/coreui/scss/functions";
+
+// If you want to override variables do it here
+@import "variables";
+@import "variables-dark";
+
+// Import styles
+@import "@coreui/coreui/scss/coreui";
+
+// Vendors
+@import "vendors/simplebar";
+
+// Custom styles for this theme
+@import "theme";
+
+// If you want to add custom CSS you can put it here
+@import "custom";
