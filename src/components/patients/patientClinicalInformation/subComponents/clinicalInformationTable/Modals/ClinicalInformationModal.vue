@@ -2,8 +2,8 @@
 
 import {CButton} from "@coreui/vue/dist/esm/components/button";
 import {CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle} from "@coreui/vue/dist/esm/components/modal";
-import {ref} from "vue";
-import {CCol, CRow} from "@coreui/vue/dist/esm/components/grid";
+import {inject, ref} from "vue";
+import {CCol, CContainer, CRow} from "@coreui/vue/dist/esm/components/grid";
 import {CNav, CNavItem, CNavLink} from "@coreui/vue/dist/esm/components/nav";
 import {CTabContent, CTabPane} from "@coreui/vue/dist/esm/components/tabs";
 import {CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle} from "@coreui/vue/dist/esm/components/dropdown";
@@ -20,15 +20,52 @@ import BiochemicalLaboratoriesForm
   from "@/components/patients/patientClinicalInformation/subComponents/clinicalInformationTable/Forms/Laboratories/BiochemicalLaboratoriesForm.vue";
 import HormonalLaboratoriesForm
   from "@/components/patients/patientClinicalInformation/subComponents/clinicalInformationTable/Forms/Laboratories/HormonalLaboratoriesForm.vue";
+import {useUserStore} from "@/stores/authentication/userStore.ts";
+import PatientClinicalInformationService from "@/services/patients/PatientClinicalInformation.service.ts";
+import {CSpinner} from "@coreui/vue/dist/esm/components/spinner";
 
+const Swal = inject('$swal')
 
+/* Defining Props */
 const props = defineProps({
   patientCode: String,
   sampleID: Number
 })
 
+/* Invoking Store */
+const userStore = useUserStore()
+
 const visibleStaticBackdropDemo = ref(false)
 const tabPanePillsActiveKey = ref(1)
+const isClosingClinicalInformation = ref(false)
+
+async function closePatientClinicalInformation() {
+
+  isClosingClinicalInformation.value = true
+  const payload = {
+    muestra_id: props.sampleID,
+    user_id: userStore.id
+  }
+
+  try {
+
+    const response = await PatientClinicalInformationService.closePatientClinicalInformation(payload)
+
+    Swal.fire({
+      icon: 'success',
+      title: response.data.message
+    })
+    isClosingClinicalInformation.value = false
+  } catch (error) {
+    console.log(error)
+    Swal.fire({
+      icon: 'error',
+      title: error.response.message
+    })
+    isClosingClinicalInformation.value = false
+  }
+
+}
 
 </script>
 
@@ -131,6 +168,25 @@ const tabPanePillsActiveKey = ref(1)
       </CRow>
 
     </CModalBody>
+
+    <CModalFooter>
+      <CContainer>
+        <CRow>
+          <CCol class="d-flex justify-content-end align-items-center">
+            <CButton
+                color="primary"
+                shape="rounded-pill"
+                @click.prevent="closePatientClinicalInformation"
+                :disabled="isClosingClinicalInformation"
+            >
+              <CSpinner as="span" size="sm" variant="grow" aria-hidden="true" v-if="isClosingClinicalInformation" />
+              <font-awesome-icon :icon="['fas', 'floppy-disk']" v-else />
+              {{ isClosingClinicalInformation ? 'Guardando Información Clínica...' : 'Cerrar Información Clínica' }}
+            </CButton>
+          </CCol>
+        </CRow>
+      </CContainer>
+    </CModalFooter>
   </CModal>
 
 </template>

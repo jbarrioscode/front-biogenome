@@ -8,5 +8,8 @@ export default {
     },
     savePatientClinicalInformation(payload) {
         return api.post(`/api/v1/muestra/post/guardar-info-clinica`, payload)
-    }
+    },
+    closePatientClinicalInformation(payload) {
+        return api.post(`/api/v1/muestra/post/guardar-cerrar-info-clinica`, payload)
+    },
 }
