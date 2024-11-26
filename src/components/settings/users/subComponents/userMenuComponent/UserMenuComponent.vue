@@ -16,14 +16,19 @@ const usersStore = useUsersStore()
       <div class="d-grid gap-2 d-md-flex justify-content-md-end">
 
         <CButton size="sm" shape="rounded-pill" color="success">
-          <CIcon icon="cil-cloud-download" />
+          <CIcon icon="cil-cloud-download"/>
           Descargar Reporte
         </CButton>
 
-        <CreateUserModal />
+        <CreateUserModal/>
 
-        <CButton size="sm" shape="rounded-pill" color="warning" @click="() => usersStore.fetchActiveUsers()">
-          <CIcon icon="cil-reload" />
+        <CButton
+            size="sm"
+            shape="rounded-pill"
+            color="warning"
+            @click="() => usersStore.fetchActiveUsers()"
+        >
+          <font-awesome-icon :icon="['fas' ,'sync']"/>
           Recargar
         </CButton>
       </div>

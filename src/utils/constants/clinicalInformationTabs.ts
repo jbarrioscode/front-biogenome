@@ -30,11 +30,11 @@ export const clinicalInformationTabs = [
                 value: 6,
                 status: true
             },*/
-            {
+            /*{
                 name: 'Otros Antecedentes',
                 value: 7,
                 status: true
-            },
+            },*/
         ]
     },
     {

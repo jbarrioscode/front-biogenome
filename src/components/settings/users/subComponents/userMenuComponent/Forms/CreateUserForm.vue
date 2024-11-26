@@ -7,9 +7,12 @@ import {useDocumentTypesStore} from "@/stores/settings/documentTypesStore.ts";
 import {useRoleStore} from "@/stores/settings/roleStore.ts";
 import {CButton} from "@coreui/vue/dist/esm/components/button";
 import UsersService from "@/services/settings/Users.service.ts";
+import {useUsersStore} from "@/stores/settings/usersStore.ts";
+import {CSpinner} from "@coreui/vue/dist/esm/components/spinner";
 
 const Swal = inject('$swal')
 
+const usersStore = useUsersStore()
 const documentTypesStore = useDocumentTypesStore()
 const roleStore = useRoleStore()
 
@@ -161,9 +164,15 @@ const saveUser = async () => {
                 <CIcon icon="cil-x" />
                 Cancelar
               </CButton>
-              <CButton shape="rounded-pill" color="primary" type="submit">
-                <CIcon icon="cil-save" />
-                Registrar Usuario
+              <CButton
+                  shape="rounded-pill"
+                  color="primary"
+                  type="submit"
+                  :disabled="usersStore.isLoadingUsers"
+              >
+                <CSpinner v-if="usersStore.isLoadingUsers" as="span" size="sm" variant="grow" aria-hidden="true"/>
+                <CIcon icon="cil-save" v-else />
+                {{ usersStore.isLoadingUsers ? 'Guardando Usuario...' : 'Registrar Usuario' }}
               </CButton>
             </div>
           </CCol>

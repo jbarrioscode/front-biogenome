@@ -1,15 +1,15 @@
 <script setup lang="ts">
 
 import {CButton} from "@coreui/vue/dist/esm/components/button";
-import {inject, onMounted, ref} from "vue";
+import {inject, reactive, ref} from "vue";
 import {CModal, CModalBody, CModalHeader, CModalTitle} from "@coreui/vue/dist/esm/components/modal";
 import PatientSurveyService from "@/services/survey/PatientSurvey.service.ts";
 import {CCol, CRow} from "@coreui/vue/dist/esm/components/grid";
 import {CCard, CCardBody, CCardHeader} from "@coreui/vue/dist/esm/components/card";
 import {CForm, CFormCheck, CFormInput, CFormLabel, CFormSelect} from "@coreui/vue/dist/esm/components/form";
-import {array} from "yup";
-
-const Swal = inject('$swal')
+import {drugsList} from "@/utils/constants/drugList.ts";
+import {SymptomsList} from "@/utils/constants/symptomsList.ts";
+import Swal from 'sweetalert2'
 
 const props = defineProps({
   patientId: Number,
@@ -18,6 +18,7 @@ const props = defineProps({
 
 /* Modal Open or Close State */
 const visibleStaticBackdropDemo = ref(false)
+const formData = reactive({})
 
 /* Loader Props */
 const loaderParams = ref({
@@ -32,19 +33,22 @@ function getInputType(property: any) {
 
 function getColumnWidthXL(property: any) {
   const colsWidthXL = property.find(prop => prop.parametro === "colsWidthXL")
-  console.log(colsWidthXL)
   return colsWidthXL ? colsWidthXL.propiedad : 0
 }
 
 function getColumnWidthSM(property: any) {
   const colsWidthSM = property.find(prop => prop.parametro === "colsWidthSM")
-  console.log(colsWidthSM)
   return colsWidthSM ? colsWidthSM.propiedad : 0
 }
 
 function getPlaceholder(property: any) {
   const placeholder = property.find(prop => prop.parametro === "placeholder")
   return placeholder ? placeholder.propiedad : ""
+}
+
+function getFileJSON(property: any) {
+  const fileJson = property.find(prop => prop.parametro === "fileJson")
+  return fileJson ? fileJson.propiedad : ""
 }
 
 /* Consuming the survey endpoint */
@@ -60,7 +64,7 @@ const getSurveyInfoByProtocol = async (protocolID: number) => {
     isLoadingSurveyInformation.value = false
   } catch (error) {
     console.log(error)
-    Swal.fire({
+    await Swal.fire({
       icon: 'error',
       title: 'Oooops!',
       text: error.response.message
@@ -79,6 +83,7 @@ const getSurveyInfoByProtocol = async (protocolID: number) => {
       shape="rounded-pill"
       @click.prevent="() => { visibleStaticBackdropDemo = true; getSurveyInfoByProtocol(patientProtocol) }"
       title="Diligenciar Historia"
+      :disabled="props.patientProtocol===0"
   >
     <font-awesome-icon :icon="['fas', 'clipboard-list']"/>
   </CButton>
@@ -132,14 +137,16 @@ const getSurveyInfoByProtocol = async (protocolID: number) => {
                       :id="`${question.tipo_pregunta}-${question.id_pregunta}`"
                       :placeholder="getPlaceholder(question.propiedades)"
                       :type="getInputType(question.propiedades)"
+                      v-model="formData[question.id_pregunta]"
                   />
 
                   <CFormSelect
                       v-else-if="question.id_tipo_pregunta === 2"
                       aria-label="Default select example"
                       :id="`${question.tipo_pregunta}-${question.id_pregunta}`"
+                      v-model="formData[question.id_pregunta]"
                   >
-                    <option value="">Open this select menu</option>
+                    <option value="">Seleccione una opción</option>
                     <option v-for="(option, index) in question.opciones" :key="option.id" :value="option.id">
                       {{ option.opcion }}
                     </option>
@@ -151,20 +158,58 @@ const getSurveyInfoByProtocol = async (protocolID: number) => {
                       v-for="(option, index) in question.opciones"
                       :key="option.id"
                       :label="option.opcion"
+                      v-model="formData[question.id_pregunta]"
                   />
 
-                  <CFormCheck
-                      v-else-if="question.id_tipo_pregunta === 4"
-                      :id="`${question.tipo_pregunta}-${question.id_pregunta}`"
-                      type="radio"
-                      :name="`flexRadio-${question.tipo_pregunta}-${question.id_pregunta}`"
-                      v-for="(radio, index) in question.opciones"
-                      :key="radio.id"
-                      :label="radio.opcion"
-                  />
+                  <CRow v-else-if="question.id_tipo_pregunta === 4">
+                    <CCol md="12">
+                      <CFormCheck
+                          v-model="formData[question.id_pregunta]"
+                          :id="`${question.tipo_pregunta}-${question.id_pregunta}`"
+                          type="radio"
+                          :name="`flexRadio-${question.tipo_pregunta}-${question.id_pregunta}`"
+                          v-for="(radio, index) in question.opciones"
+                          :key="radio.id"
+                          :label="radio.opcion"
+                          :value="radio.opcion"
+                      />
+                    </CCol>
+                    <CCol md="12" v-if="question.subpreguntas.length">
+
+                     <CRow v-for="(sub, indexTwo) in question.subpreguntas" :key="sub.id_subpregunta">
+
+                       <CCol md="12" v-if="sub.id_tipo_pregunta === 1">
+                         <CFormLabel :for="`sub-${sub.tipo_pregunta}-${sub.id_subpregunta}`">
+                           {{ sub.nombre_subpregunta }}
+                         </CFormLabel>
+                           <CFormInput
+                               :id="`sub-${sub.tipo_pregunta}-${sub.id_subpregunta}`"
+                               :placeholder="getPlaceholder(sub.propriedadesSubPregunta)"
+                               :type="getInputType(sub.propriedadesSubPregunta)"
+                           />
+                       </CCol>
+
+                       <CCol md="12" v-else-if="sub.id_tipo_pregunta === 2">
+                         <CFormLabel :for="`sub-${sub.tipo_pregunta}-${sub.id_subpregunta}`">
+                           {{ sub.nombre_subpregunta }}
+                         </CFormLabel>
+                         <VueMultiselect
+                             :id="`sub-${sub.tipo_pregunta}-${sub.id_subpregunta}`"
+                             :allow-empty="false"
+                             :close-on-select="true"
+                             :options="getFileJSON(sub.propriedadesSubPregunta) === 'drugList' ? drugsList : SymptomsList"
+                             :label="getFileJSON(sub.propriedadesSubPregunta) === 'drugList' ? 'DescripcionComercial' : 'value'"
+                             searchable
+                             :track-by="getFileJSON(sub.propriedadesSubPregunta) === 'drugList' ? 'DescripcionComercial' : 'value'"
+                         />
+                       </CCol>
+
+                     </CRow>
+
+                    </CCol>
+                  </CRow>
 
                 </CCol>
-
 
               </CForm>
 
