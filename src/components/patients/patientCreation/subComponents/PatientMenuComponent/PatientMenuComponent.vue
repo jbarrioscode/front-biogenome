@@ -24,7 +24,7 @@ const patientStore = usePatientStore()
         <CreatePatientModal />
 
         <CButton size="sm" shape="rounded-pill" color="warning" @click="() => patientStore.fetchPatientsList()">
-          <CIcon icon="cil-reload" />
+          <font-awesome-icon :icon="['fas', 'sync']"/>
           Recargar
         </CButton>
       </div>

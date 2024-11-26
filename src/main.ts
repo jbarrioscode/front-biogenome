@@ -37,7 +37,17 @@ import {QuillEditor} from "@vueup/vue-quill";
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
 /* Vue Select */
-/*import VueSelect from "vue3-select-component";*/
+import VueSelect from "vue3-select-component";
+
+/** Vue Input Multi Select */
+import VueMultiselect from "vue-multiselect";
+import 'vue-multiselect/dist/vue-multiselect.css'
+
+/** Vue DaysJs */
+import * as dayjs from "dayjs";
+import relativeTime from 'dayjs/plugin/relativeTime';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 
 
 const app = createApp(App)
@@ -50,6 +60,13 @@ app.component('font-awesome-icon', FontAwesomeIcon)
 app.component('table-lite', VueTableLite)
 app.component('pulse-loader', PulseLoader)
 app.component('QuillEditor', QuillEditor)
+app.component('custom-select', VueSelect)
+app.component('VueMultiselect', VueMultiselect)
 app.provide('icons', icons)
 app.component('CIcon', CIcon)
+
+app.config.globalProperties.$dayjs = dayjs.extend(relativeTime);
+app.config.globalProperties.$dayjs = dayjs.extend(utc);
+app.config.globalProperties.$dayjs = dayjs.extend(timezone);
+
 app.mount('#app')

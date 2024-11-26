@@ -1,10 +1,10 @@
 <script setup lang="ts">
-
-import {CButton} from "@coreui/vue/dist/esm/components/button"
 import {ref} from "vue";
 import {CModal, CModalBody, CModalHeader, CModalTitle} from "@coreui/vue/dist/esm/components/modal";
-import CreateHeadquarterForm
-  from "@/components/settings/headquarters/subComponents/headquartersMenuComponent/Forms/CreateHeadquarterForm.vue";
+import {CButton} from "@coreui/vue/dist/esm/components/button";
+import CreateRoleForm from "@/components/settings/roles/subComponents/roleMenuComponent/Forms/CreateRoleForm.vue";
+import CreateInformedConsentForm
+  from "@/components/settings/informedConsents/subComponents/informedConsentsMenuComponent/Forms/CreateInformedConsentForm.vue";
 
 const visibleStaticBackdropDemo = ref(false)
 </script>
@@ -17,8 +17,8 @@ const visibleStaticBackdropDemo = ref(false)
         color="primary"
         @click="() => { visibleStaticBackdropDemo = true }"
     >
-      <font-awesome-icon :icon="['fas', 'house-medical']" />
-      Crear Sede
+      <font-awesome-icon :icon="['fas', 'file-circle-plus']" />
+      Crear Consentimiento
     </CButton>
 
     <CModal
@@ -26,20 +26,19 @@ const visibleStaticBackdropDemo = ref(false)
         :visible="visibleStaticBackdropDemo"
         @close="() => { visibleStaticBackdropDemo = false }"
         aria-labelledby="StaticBackdropExampleLabel"
-        size="xl"
+        size="lg"
     >
       <CModalHeader>
         <CModalTitle id="StaticBackdropExampleLabel">
-          Ventana: Creación de Sedes
+          Ventana: Creación de Consentimientos Informados
         </CModalTitle>
       </CModalHeader>
       <CModalBody>
 
-        <CreateHeadquarterForm />
+        <CreateInformedConsentForm />
 
       </CModalBody>
     </CModal>
-
   </div>
 </template>
 

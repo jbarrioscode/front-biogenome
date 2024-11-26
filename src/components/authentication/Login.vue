@@ -8,6 +8,7 @@ import {reactive, ref} from "vue";
 import {useAuthStore} from "@/stores/authentication/authStore.ts";
 import {useRouter} from "vue-router";
 import {CSpinner} from "@coreui/vue/dist/esm/components/spinner/index.js";
+import {CImage} from "@coreui/vue/dist/esm/components/image/index.js";
 
 /* Using router */
 const router = useRouter()
@@ -20,6 +21,7 @@ const appData = reactive({
   app_version: import.meta.env.VITE_APP_VERSION,
   app_version_date: import.meta.env.VITE_APP_VERSION_DATE,
 })
+const logoURL = "src/assets/images/biogenome_logo.jpeg"
 
 const credentials = reactive({
   email: '',
@@ -54,34 +56,43 @@ const loginFormFunction = async () => {
   <CCol :md="6">
     <CCard class="p-4">
       <CCardBody>
-        <CForm @submit.prevent="loginFormFunction" ref="loginForm">
-          <h1>Biogenome</h1>
-          <p class="text-body-secondary">Ingresa acá a tu cuenta</p>
-          <CInputGroup class="mb-3">
-            <CInputGroupText>
-              <CIcon icon="cil-user"/>
-            </CInputGroupText>
-            <CFormInput
-                autofocus
-                placeholder="Usuario o Email"
-                autocomplete="username"
-                v-model="credentials.email"
-            />
-          </CInputGroup>
-          <CInputGroup class="mb-4">
-            <CInputGroupText>
-              <CIcon icon="cil-lock-locked"/>
-            </CInputGroupText>
-            <CFormInput
-                type="password"
-                placeholder="Contraseña"
-                autocomplete="current-password"
-                v-model="credentials.password"
-            />
-          </CInputGroup>
+        <CForm class="row g-3" @submit.prevent="loginFormFunction" ref="loginForm">
+
+          <CCol md="12" class="text-center">
+            <CImage :src="logoURL" width="200" />
+          </CCol>
+          <CCol md="12" class="text-center">
+            <h3>Proyecto BIOGENOME</h3>
+            <p class="text-body-secondary">Ingresa acá a tu cuenta</p>
+          </CCol>
+          <CCol md="12">
+            <CInputGroup>
+              <CInputGroupText>
+                <CIcon icon="cil-user"/>
+              </CInputGroupText>
+              <CFormInput
+                  autofocus
+                  placeholder="Usuario o Email"
+                  autocomplete="username"
+                  v-model="credentials.email"
+              />
+            </CInputGroup>
+          </CCol>
+          <CCol md="12" class="mb-4">
+            <CInputGroup >
+              <CInputGroupText>
+                <CIcon icon="cil-lock-locked"/>
+              </CInputGroupText>
+              <CFormInput
+                  type="password"
+                  placeholder="Contraseña"
+                  autocomplete="current-password"
+                  v-model="credentials.password"
+              />
+            </CInputGroup>
+          </CCol>
           <CRow>
             <CCol>
-
               <CButton color="primary" :disabled="isAuthenticating" class="px-4" type="submit">
                 <CSpinner as="span" size="sm" aria-hidden="true" v-if="isAuthenticating"/>
                 {{ isAuthenticating ? 'Ingresando...' : 'Iniciar Sesión' }}

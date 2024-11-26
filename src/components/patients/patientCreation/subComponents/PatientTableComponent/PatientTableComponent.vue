@@ -97,7 +97,14 @@ onMounted(() => {
 
         <PatientInformedConsentModal
             :patientId="data.value.id"
+            :patientName="data.value.primer_nombre"
+            :patientDoctype="data.value.tipo_doc"
+            :patientDocument="data.value.numero_documento"
+            :patientCity="data.value.ciudad_residencia"
+            :patientAge="data.value.edad"
+            :patientPhone="data.value.telefono_celular"
             :patientHasProtocol="!!data.value.protocolos.length"
+            :patientProtocol="data.value.protocolos"
         />
 
         <PatientSurveyModal

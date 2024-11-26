@@ -2,10 +2,9 @@
 
 import {CCard, CCardBody} from "@coreui/vue/dist/esm/components/card";
 import {CButton} from "@coreui/vue/dist/esm/components/button";
-import {useUsersStore} from "@/stores/settings/usersStore.ts";
-import CreateUserModal from "@/components/settings/users/subComponents/userMenuComponent/Modals/CreateUserModal.vue";
+import {usePatientClinicalInformationStore} from "@/stores/patients/patientClinicalInformationStore.ts";
 
-const usersStore = useUsersStore()
+const patientWCIStore = usePatientClinicalInformationStore()
 
 </script>
 
@@ -16,19 +15,17 @@ const usersStore = useUsersStore()
       <div class="d-grid gap-2 d-md-flex justify-content-md-end">
 
         <CButton size="sm" shape="rounded-pill" color="success">
-          <CIcon icon="cil-cloud-download"/>
+          <CIcon icon="cil-cloud-download" />
           Descargar Reporte
         </CButton>
-
-        <CreateUserModal/>
 
         <CButton
             size="sm"
             shape="rounded-pill"
             color="warning"
-            @click="() => usersStore.fetchActiveUsers()"
+            @click.prevent="() => patientWCIStore.fetchPatientsWithOutClinicalInformation()"
         >
-          <font-awesome-icon :icon="['fas' ,'sync']"/>
+          <font-awesome-icon :icon="['fas', 'sync']"/>
           Recargar
         </CButton>
       </div>
