@@ -8,7 +8,7 @@ export default {
     getInformedConsentByProtocolId(protocolId: number) {
         return api.get(`/api/v1/patient/get/consentimiento-por-protocolo/${protocolId}`)
     },
-    savePatientInformedConsent(payload: IPatientInformedConsent) {
+    savePatientInformedConsent(payload) {
         return api.post(`/api/v1/patient/post/patient-informed-consent`, payload);
     }
 

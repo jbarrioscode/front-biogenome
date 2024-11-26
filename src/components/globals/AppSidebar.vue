@@ -85,7 +85,7 @@ function redirectToViews(view: string) {
         <CNavItem href="#">
           <span class="nav-icon"><span class="nav-icon-bullet"></span></span> Seguimiento
         </CNavItem>
-        <CNavItem href="#">
+<!--        <CNavItem href="#">
           <span class="nav-icon"><span class="nav-icon-bullet"></span></span> Crear Lote
         </CNavItem>
         <CNavItem href="#">
@@ -93,7 +93,7 @@ function redirectToViews(view: string) {
         </CNavItem>
         <CNavItem href="#">
           <span class="nav-icon"><span class="nav-icon-bullet"></span></span> Recepción de Lote
-        </CNavItem>
+        </CNavItem>-->
         <CNavItem href="#">
           <span class="nav-icon"><span class="nav-icon-bullet"></span></span> Asignación de estante
         </CNavItem>
