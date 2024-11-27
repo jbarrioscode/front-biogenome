@@ -10,7 +10,7 @@ import FollowUpTableComponent
 <template>
   <CContainer fluid>
 
-    <CRow>
+    <CRow class="mb-3">
       <CCol>
         <FollowUpMenuComponent/>
       </CCol>

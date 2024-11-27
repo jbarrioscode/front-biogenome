@@ -1,14 +1,12 @@
 <script setup lang="ts">
 
 
-import {useFollowUpSample} from "@/stores/followUp/followUpStore.ts";
+import {useFollowUpSampleStore} from "@/stores/followUp/followUpStore.ts";
 import {onMounted, reactive} from "vue";
-import ClinicalInformationModal
-  from "@/components/patients/patientClinicalInformation/subComponents/clinicalInformationTable/Modals/ClinicalInformationModal.vue";
 import FollowUpModal
   from "@/components/samples/followUp/SubComponents/followUpInformationTable/Modals/FollowUpModal.vue";
 
-const followUpStore = useFollowUpSample()
+const followUpStore = useFollowUpSampleStore()
 
 const table = reactive({
   isLoading: false,
@@ -24,14 +22,7 @@ const table = reactive({
       width: '3%',
       sortable: true,
       isKey: true,
-    }
-    /*,
-    {
-      label: "paciente_id",
-      field: "paciente_id",
-      sortable: true,
-      isKey: true,
-    }*/,
+    },
     {
       label: "Protocolo",
       field: "protocolo",
@@ -67,9 +58,9 @@ onMounted(() => {
   <div>
     <table-lite
         :is-slot-mode="true"
-        :is-loading="followUpStore.isLoadingPatientWCI"
+        :is-loading="followUpStore.isLoadingFollowUpPatients"
         :columns="table.columns"
-        :rows="followUpStore.patientWCI"
+        :rows="followUpStore.followUpPatients"
         :total="table.totalRecordCount"
         :sortable="table.sortable"
         size="sm"
@@ -78,9 +69,7 @@ onMounted(() => {
       <template v-slot:actions="data">
 
         <FollowUpModal
-            :codigo_muestra="data.value.codigo_muestra"
-            :sampleID="data.value.id"
-
+            :sampleID="data.value.codigo_muestra"
         />
 
       </template>

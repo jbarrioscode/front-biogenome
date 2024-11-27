@@ -18,6 +18,10 @@ import PatientClinicalInformationMainComponent
 import InformedConsentsMainComponent from "@/components/settings/informedConsents/InformedConsentsMainComponent.vue";
 import FollowUpMainComponent from "@/components/samples/followUp/FollowUpMainComponent.vue";
 import ShelfAssignmentMainComponent from "@/components/samples/shelfAssignment/ShelfAssignmentMainComponent.vue";
+import ShelfAssignmentSamplesComponent
+    from "@/components/samples/shelfAssignment/SubComponents/ShelfAssignmentSamples/ShelfAssignmentSamplesComponent.vue";
+import ShelfAssignmentCounterSamplesComponent
+    from "@/components/samples/shelfAssignment/SubComponents/ShelfAssignmentCounterSamples/ShelfAssignmentCounterSamplesComponent.vue";
 
 const routesObject: any = [
     {
@@ -85,7 +89,22 @@ const routesObject: any = [
                     {
                         path: '/samples/shelf-assignment',
                         name: 'shelf-assignment',
-                        component: ShelfAssignmentMainComponent
+                        component: ShelfAssignmentMainComponent,
+                        redirect: () =>{
+                            return {name: "shelf-assignment-samples"}
+                        },
+                        children: [
+                            {
+                                path: '/samples/shelf-assignment/samples',
+                                name: 'shelf-assignment-samples',
+                                component: ShelfAssignmentSamplesComponent
+                            },
+                            {
+                                path: '/samples/shelf-assignment/counter-samples',
+                                name: 'shelf-assignment-counter-samples',
+                                component: ShelfAssignmentCounterSamplesComponent
+                            }
+                        ]
                     }
                 ]
             },

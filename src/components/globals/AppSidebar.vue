@@ -110,12 +110,12 @@ function redirectToViews(view: string) {
           <CIcon customClassName="nav-icon" icon="cil-puzzle"/>
           Reportes
         </template>
-        <CNavItem href="#">
+        <CNavItem href="#" @click.prevent="redirectToViews('reports')">
           <span class="nav-icon"><span class="nav-icon-bullet"></span></span> Reporte 1
         </CNavItem>
-        <CNavItem href="#">
+<!--        <CNavItem href="#">
           <span class="nav-icon"><span class="nav-icon-bullet"></span></span> Reporte 2
-        </CNavItem>
+        </CNavItem>-->
       </CNavGroup>
       <!-- End Reports Section -->
 

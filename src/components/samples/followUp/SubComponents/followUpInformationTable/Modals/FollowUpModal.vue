@@ -1,34 +1,42 @@
 <script setup lang="ts">
-import { CButton } from "@coreui/vue/dist/esm/components/button";
-import { CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle } from "@coreui/vue/dist/esm/components/modal";
-import { inject, ref } from "vue";
+import {CButton} from "@coreui/vue/dist/esm/components/button";
+import {CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle} from "@coreui/vue/dist/esm/components/modal";
+import {inject, ref} from "vue";
 import {onUnmounted} from "vue";
-import { CCol, CContainer, CRow } from "@coreui/vue/dist/esm/components/grid";
-import { CIcon } from "@coreui/icons-vue"; // Importación del componente de iconos
+import {CCol, CContainer, CRow} from "@coreui/vue/dist/esm/components/grid";
+import {CIcon} from "@coreui/icons-vue"; // Importación del componente de iconos
 
 import FollowUpService from "@/services/followUp/FollowUp.service";
+import {CCard, CCardBody, CCardHeader, CCardText} from "@coreui/vue/dist/esm/components/card";
+import dayjs from "dayjs";
 
 const Swal = inject('$swal');
 
 /* Defining Props */
 const props = defineProps({
-  codigo_muestra: String,
-  sampleID: Number,
+  sampleID: {
+    type: String,
+    required: true
+  },
 });
 
 const infoLoadingStatus = ref(false)
-const fase = ref([])
+const samplePhases = ref([])
 
-const getTrackingDetail = async (sampleID) => {
+const loaderParams = ref({
+  color: '#4fc08d',
+})
+
+const getTrackingDetail = async (sample_code: string) => {
 
   infoLoadingStatus.value = true
 
-  await FollowUpService.getTrackingDetailInfo(sampleID)
+  await FollowUpService.getTrackingDetailInfo(sample_code)
       .then((response) => {
         if (response.data.statusCode !== 200) {
           infoLoadingStatus.value = false
         } else {
-          fase.value = response.data.data
+          samplePhases.value = response.data.data
           infoLoadingStatus.value = false
           //console.log(response.data.data)
         }
@@ -40,14 +48,13 @@ const getTrackingDetail = async (sampleID) => {
 }
 
 function onDestroy() {
-  fase.value = []
+  samplePhases.value = []
   infoLoadingStatus.value = false
 }
 
 onUnmounted(onDestroy)
 
-
-const fases = [
+/*const fases = [
   {
     nombre: "Registro muestra",
     fecha: "2024-11-27",
@@ -76,7 +83,7 @@ const fases = [
     icono: "",
     cumplido: false,
   },
-];
+];*/
 
 
 const visibleStaticBackdropDemo = ref(false);
@@ -87,12 +94,11 @@ const visibleStaticBackdropDemo = ref(false);
       color="info"
       shape="rounded-pill"
       title="Estados"
-      @click="() => { visibleStaticBackdropDemo = true}"
-
+      @click="() => { visibleStaticBackdropDemo = true; getTrackingDetail(props.sampleID)}"
       size="sm"
   >
-    <font-awesome-icon :icon="['fab', 'wpforms']" />
-    Estados
+    <font-awesome-icon :icon="['fab', 'wpforms']"/>
+    Ver Trazabilidad
   </CButton>
 
   <CModal
@@ -104,25 +110,40 @@ const visibleStaticBackdropDemo = ref(false);
   >
     <CModalHeader>
       <CModalTitle id="StaticBackdropExampleLabel">
-        Seguimiento muestra - {{ props.codigo_muestra }}
+        Ventana: SEGUIMIENTO DE LA MUESTRA - {{ props.sampleID }}
       </CModalTitle>
     </CModalHeader>
     <CModalBody>
       <CRow class="mb-3">
-        <CCol>
-          <h5 class="text-center mb-4">Fases del Proceso</h5>
+
+        <CCol md="12" v-if="infoLoadingStatus" class="text-center">
+          <pulse-loader :loading="infoLoadingStatus" :color="loaderParams.color"/>
+        </CCol>
+
+        <CCol md="12" v-else>
+          <CRow class="mb-3">
+            <CCol>
+              <h5 class="text-center mb-4 text-uppercase">Fases del Proceso</h5>
+            </CCol>
+          </CRow>
           <CRow>
-            <CCol md="6" lg="3" v-for="(fase, index) in fases" :key="index" class="mb-4">
-              <CCard class="mb-3 border-top-3" :class="fase.cumplido ? 'border-success' : 'border-secondary'" style="max-width: 18rem">
+            <CCol md="6" lg="4" v-for="(phase, index) in samplePhases" :key="index" class="mb-4">
+              <CCard class="mb-3 border-top-3" :class="phase.cumplido ? 'border-success' : 'border-secondary'"
+                     style="max-width: 18rem">
                 <CCardHeader class="d-flex justify-content-between align-items-center">
-                  <span>{{ fase.nombre }}</span>
-                  <CIcon :name="'cil-task'" size="sm" :class="[fase.cumplido ? 'text-success' : 'text-secondary']" />
+                  <span>{{ phase.estado }}</span>
+                  <CIcon :name="'cil-task'" size="sm" class="text-success"/>
                 </CCardHeader>
                 <CCardBody>
-                  <CListGroup flush>
-                    <CListGroupItem>{{fase.user}}</CListGroupItem>
-                    <CListGroupItem>{{fase.fecha}}</CListGroupItem>
-                  </CListGroup>
+                  <CCardText>
+                    Usuario: {{ phase.nombre + ' ' + phase.apellido }}
+                  </CCardText>
+                  <CCardText>
+                    Fecha:
+                    <small class="text-body-secondary">
+                      {{ phase.fecha }}
+                    </small>
+                  </CCardText>
                 </CCardBody>
               </CCard>
             </CCol>
@@ -135,8 +156,13 @@ const visibleStaticBackdropDemo = ref(false);
       <CContainer>
         <CRow>
           <CCol class="d-flex justify-content-end align-items-center">
-            <CButton color="primary" shape="rounded-pill" @click="visibleStaticBackdropDemo = false">
-              Cerrar
+            <CButton
+                color="primary"
+                shape="rounded-pill"
+                @click="visibleStaticBackdropDemo = false"
+            >
+              <font-awesome-icon :icon="['fas', 'times']" />
+              Cerrar Ventana
             </CButton>
           </CCol>
         </CRow>
@@ -149,12 +175,15 @@ const visibleStaticBackdropDemo = ref(false);
 .text-success {
   color: #28a745 !important;
 }
+
 .text-secondary {
   color: #6c757d !important;
 }
+
 .border-success {
   border-color: #28a745 !important;
 }
+
 .border-secondary {
   border-color: #6c757d !important;
 }

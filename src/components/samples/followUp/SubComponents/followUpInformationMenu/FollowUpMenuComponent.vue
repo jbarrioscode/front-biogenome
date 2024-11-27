@@ -3,8 +3,9 @@
 import {CCard, CCardBody} from "@coreui/vue/dist/esm/components/card";
 import {CButton} from "@coreui/vue/dist/esm/components/button";
 import {usePatientClinicalInformationStore} from "@/stores/patients/patientClinicalInformationStore.ts";
+import {useFollowUpSampleStore} from "@/stores/followUp/followUpStore.ts";
 
-const patientWCIStore = usePatientClinicalInformationStore()
+const followPatientsStore = useFollowUpSampleStore()
 
 </script>
 
@@ -23,7 +24,7 @@ const patientWCIStore = usePatientClinicalInformationStore()
             size="sm"
             shape="rounded-pill"
             color="warning"
-            @click.prevent="() => patientWCIStore.fetchPatientsWithOutClinicalInformation()"
+            @click.prevent="() => followPatientsStore.fetchFollowSample()"
         >
           <font-awesome-icon :icon="['fas', 'sync']"/>
           Recargar
