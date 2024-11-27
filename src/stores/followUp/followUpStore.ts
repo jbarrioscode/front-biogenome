@@ -3,28 +3,28 @@ import FollowUpService from "@/services/followUp/FollowUp.service";
 
 
 
-export const useFollowUpSample = defineStore('followSamplesHis', {
+export const useFollowUpSampleStore = defineStore('followSamplesHis', {
     state:() => ({
-        patientWCI: [],
-        isLoadingPatientWCI: false,
+        followUpPatients: [],
+        isLoadingFollowUpPatients: false,
         error: null,
     }),
     actions: {
         async fetchFollowSample () {
-            this.isLoadingPatientWCI = true
+            this.isLoadingFollowUpPatients = true
             this.error = null
             try {
 
                 const {data} = await FollowUpService.getAllMuestrasProtocolo()
-                this.patientWCI = data.data
+                this.followUpPatients = data.data
 
-                this.isLoadingPatientWCI = false
+                this.isLoadingFollowUpPatients = false
 
             } catch (error) {
                 console.log(error)
-                this.isLoadingPatientWCI = false
+                this.isLoadingFollowUpPatients = false
             } finally {
-                this.isLoadingPatientWCI = false
+                this.isLoadingFollowUpPatients = false
             }
         }
     }
