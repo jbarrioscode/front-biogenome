@@ -146,8 +146,11 @@ const getSurveyInfoByProtocol = async (protocolID: number) => {
                       :id="`${question.tipo_pregunta}-${question.id_pregunta}`"
                       v-model="formData[question.id_pregunta]"
                   >
-                    <option value="">Seleccione una opción</option>
-                    <option v-for="(option, index) in question.opciones" :key="option.id" :value="option.id">
+                    <option :value="null">Seleccione una opción</option>
+                    <option v-for="(option, index) in question.opciones"
+                            :key="option.id"
+                            :value="option.opcion"
+                    >
                       {{ option.opcion }}
                     </option>
                   </CFormSelect>

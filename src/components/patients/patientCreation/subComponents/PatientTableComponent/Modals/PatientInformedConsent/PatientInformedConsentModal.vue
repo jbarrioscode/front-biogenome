@@ -238,7 +238,7 @@ const saveInformedConsent = async () => {
       <!-- Protocol Selection Section -->
       <CRow class="mb-4">
         <CCol v-if="protocolStore.isLoadingProtocol" class="text-center">
-          <pulse-loader :loading="protocolStore.isLoadingProtocol" :color="loaderParams.color"></pulse-loader>
+          <pulse-loader :loading="protocolStore.isLoadingProtocol" :color="loaderParams.color" />
         </CCol>
 
         <CCol v-else class="text-center">
