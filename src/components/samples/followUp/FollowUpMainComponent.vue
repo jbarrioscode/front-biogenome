@@ -1,6 +1,10 @@
 <script setup lang="ts">
 
 import {CCol, CContainer, CRow} from "@coreui/vue/dist/esm/components/grid";
+import FollowUpMenuComponent
+  from "@/components/samples/followUp/SubComponents/followUpInformationMenu/FollowUpMenuComponent.vue";
+import FollowUpTableComponent
+  from "@/components/samples/followUp/SubComponents/followUpInformationTable/FollowUpTableComponent.vue";
 </script>
 
 <template>
@@ -8,13 +12,13 @@ import {CCol, CContainer, CRow} from "@coreui/vue/dist/esm/components/grid";
 
     <CRow>
       <CCol>
-        Menu FollowUp
+        <FollowUpMenuComponent/>
       </CCol>
     </CRow>
 
     <CRow>
       <CCol>
-        Table
+        <FollowUpTableComponent/>
       </CCol>
     </CRow>
 
