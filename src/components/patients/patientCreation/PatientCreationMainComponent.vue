@@ -8,7 +8,7 @@ import PatientTableComponent
 </script>
 
 <template>
-  <CContainer xl>
+  <CContainer fluid>
 
     <CRow class="mb-4">
       <CCol>

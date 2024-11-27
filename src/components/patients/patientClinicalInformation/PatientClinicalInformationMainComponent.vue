@@ -8,8 +8,7 @@ import ClinicalInformationTableComponent
 </script>
 
 <template>
-  <div>
-
+  <CContainer fluid>
     <CRow class="mb-4">
       <CCol>
         <ClinicalInformationMenuComponent />
@@ -21,8 +20,7 @@ import ClinicalInformationTableComponent
         <ClinicalInformationTableComponent />
       </CCol>
     </CRow>
-
-  </div>
+  </CContainer>
 </template>
 
 <style scoped>

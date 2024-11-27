@@ -16,6 +16,8 @@ import PatientCreationMainComponent from "@/components/patients/patientCreation/
 import PatientClinicalInformationMainComponent
     from "@/components/patients/patientClinicalInformation/PatientClinicalInformationMainComponent.vue";
 import InformedConsentsMainComponent from "@/components/settings/informedConsents/InformedConsentsMainComponent.vue";
+import FollowUpMainComponent from "@/components/samples/followUp/FollowUpMainComponent.vue";
+import ShelfAssignmentMainComponent from "@/components/samples/shelfAssignment/ShelfAssignmentMainComponent.vue";
 
 const routesObject: any = [
     {
@@ -74,6 +76,18 @@ const routesObject: any = [
                 path: '/samples',
                 name: 'samples',
                 component: SamplesMainComponent,
+                children: [
+                    {
+                        path: '/samples/follow-up',
+                        name: 'follow-up',
+                        component: FollowUpMainComponent
+                    },
+                    {
+                        path: '/samples/shelf-assignment',
+                        name: 'shelf-assignment',
+                        component: ShelfAssignmentMainComponent
+                    }
+                ]
             },
             {
                 path: '/reports',

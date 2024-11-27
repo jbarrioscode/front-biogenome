@@ -82,7 +82,7 @@ function redirectToViews(view: string) {
           <CIcon customClassName="nav-icon" icon="cil-puzzle"/>
           Muestras
         </template>
-        <CNavItem href="#">
+        <CNavItem href="#" @click.prevent="redirectToViews('follow-up')">
           <span class="nav-icon"><span class="nav-icon-bullet"></span></span> Seguimiento
         </CNavItem>
 <!--        <CNavItem href="#">
@@ -94,7 +94,7 @@ function redirectToViews(view: string) {
         <CNavItem href="#">
           <span class="nav-icon"><span class="nav-icon-bullet"></span></span> Recepción de Lote
         </CNavItem>-->
-        <CNavItem href="#">
+        <CNavItem href="#" @click.prevent="redirectToViews('shelf-assignment')">
           <span class="nav-icon"><span class="nav-icon-bullet"></span></span> Asignación de estante
         </CNavItem>
       </CNavGroup>
