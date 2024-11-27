@@ -1,27 +1,10 @@
 <script setup lang="ts">
 
+import {CCol, CContainer, CRow} from "@coreui/vue/dist/esm/components/grid";
 </script>
 
 <template>
-  <div class="container">
-
-    <div class="row mb-3">
-      <div class="col">
-        <p>menu</p>
-      </div>
-      <!-- /.col -->
-    </div>
-    <!-- /.row -->
-
-    <div class="row">
-      <div class="col">
-        <p>Tabla</p>
-      </div>
-      <!-- /.col -->
-    </div>
-    <!-- /.row -->
-
-  </div>
+  <router-view />
 </template>
 
 <style scoped>

@@ -1,5 +1,5 @@
 # Use the node image from official Docker Hub
-FROM node:16.10.0-alpine3.13 as build-stage
+FROM node:16.10.0-alpine3.13 AS build-stage
 # set the working directory
 WORKDIR /app
 # Copy the working directory in the container
@@ -22,3 +22,7 @@ COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
 # Start Nginx to serve the application
 CMD ["nginx", "-g", "daemon off;"]
+
+#sudo docker builder prune -a
+#sudo docker build -t vueapp .
+#sudo docker run -d -p 5173:80 vueapp
