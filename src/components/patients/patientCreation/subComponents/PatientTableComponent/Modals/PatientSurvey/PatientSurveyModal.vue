@@ -11,6 +11,7 @@ import {CForm, CFormCheck, CFormInput, CFormLabel, CFormSelect} from "@coreui/vu
 import {drugsList} from "@/utils/constants/drugList.ts";
 import {SymptomsList} from "@/utils/constants/symptomsList.ts";
 import {useUserStore} from "@/stores/authentication/userStore.ts";
+import Swal from 'sweetalert2'
 
 const props = defineProps({
   patientId: Number,
@@ -83,7 +84,11 @@ const validateResponses = () => {
 
 const saveResponses = async () => {
   if (!validateResponses()) {
-    alert('Please fill out all questions before submitting.')
+    await Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: `Aún hay campos incompletos, VALIDE e intentelo nuevamente.`,
+    })
     return
   }
 
@@ -92,7 +97,8 @@ const saveResponses = async () => {
     user_created_id: userStore.id,
     protocolo_id: props.patientProtocol,
     sedes_toma_muestras_id: 1,
-    detalle: parseJsonToModel(formData.value)
+    detalle: parseJsonToModel(formData.value).detall,
+    respuesta_subpreguntas: parseJsonToModel(formData.value).respuesta_subpreguntas,
   }
   console.log(payload)
 
@@ -100,53 +106,81 @@ const saveResponses = async () => {
 
     const response = await PatientSurveyService.createSurveyInfoByProtocol(payload)
 
-    console.log(response.data.data)
+    if (response.data.statusCode === 201) {
+      await Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: response.data.message,
+      })
+      clearFields(false)
+    } else {
+      await Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: response.data.message,
+      })
+    }
 
   } catch (error) {
     console.error(error)
+    await Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: error.response.message,
+    })
   }
 
 }
 
 function parseJsonToModel(data) {
-  const result = [];
+  const detall = [];
+  const respuesta_subpreguntas = [];
 
-  for (const key in data) {
+  Object.entries(data).forEach(([key, value]) => {
+    // Verifica si es una subpregunta
     if (key.startsWith("sub_")) {
-      // Procesar las variables de subpreguntas
-      const [, subId, preguntaId] = key.split("_").map(Number);
-      const preguntaExistente = result.find(
-          (item) => item.pregunta_id === preguntaId
-      );
-
-      const subPregunta = {
-        subpregunta_id: subId,
-        respuesta:
-            typeof data[key] === "object" ? data[key].DescripcionComercial || data[key].value : data[key],
-      };
-
-      if (preguntaExistente) {
-        if (!preguntaExistente.respuesta_subpreguntas) {
-          preguntaExistente.respuesta_subpreguntas = [];
-        }
-        preguntaExistente.respuesta_subpreguntas.push(subPregunta);
+      const subId = key.replace("sub_", ""); // Extrae el ID de la subpregunta
+      if (typeof value === "object" && value !== null) {
+        respuesta_subpreguntas.push({
+          subpregunta_id: parseInt(subId, 10),
+          respuesta: value?.DescripcionComercial || value?.label || value?.value || "",
+        });
       } else {
-        result.push({
-          pregunta_id: preguntaId,
-          respuesta: data[preguntaId.toString()],
-          respuesta_subpreguntas: [subPregunta],
+        respuesta_subpreguntas.push({
+          subpregunta_id: parseInt(subId, 10),
+          respuesta: value,
         });
       }
-    } else if (!isNaN(Number(key))) {
-      // Procesar las preguntas normales
-      result.push({
-        pregunta_id: Number(key),
-        respuesta: data[key],
+    } else {
+      // Si no es subpregunta, se agrega a `detall`
+      detall.push({
+        pregunta_id: parseInt(key, 10),
+        respuesta: value,
       });
     }
-  }
+  });
 
-  return result;
+  return { detall, respuesta_subpreguntas };
+}
+
+const clearFields = (isReset: boolean) => {
+  if (isReset) {
+    Swal.fire({
+      title: "Estas seguro de limpiar el formulario?",
+      text: "Esto no podrá revertirse!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si, LIMPIAR!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        formData.value = {}
+      }
+    });
+  } else {
+    formData.value = {}
+  }
 }
 
 /*const getSurveyInfoByProtocol = async (protocolID: number) => {
@@ -334,12 +368,23 @@ onMounted(() => {
 
     </CModalBody>
     <CModalFooter>
+
+      <CButton
+          color="warning"
+          type="button"
+          shape="rounded-pill"
+          @click="clearFields(true)"
+      >
+        <font-awesome-icon :icon="['fas', 'times']" />
+        Limpiar Formulario
+      </CButton>
       <CButton
           @click.prevent="saveResponses"
           color="primary"
           type="button"
           shape="rounded-pill"
       >
+        <font-awesome-icon :icon="['fas', 'floppy-disk']" />
         Guardar Respuestas
       </CButton>
     </CModalFooter>
