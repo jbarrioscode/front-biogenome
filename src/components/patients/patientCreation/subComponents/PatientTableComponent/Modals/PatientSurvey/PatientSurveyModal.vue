@@ -10,11 +10,15 @@ import {QUESTION_FORM} from "@/utils/constants/QUESTION_FORM.ts";
 import {CForm, CFormCheck, CFormInput, CFormLabel, CFormSelect} from "@coreui/vue/dist/esm/components/form";
 import {drugsList} from "@/utils/constants/drugList.ts";
 import {SymptomsList} from "@/utils/constants/symptomsList.ts";
+import {useUserStore} from "@/stores/authentication/userStore.ts";
 
 const props = defineProps({
   patientId: Number,
   patientProtocol: Number
 })
+
+/* Importing Stores */
+const userStore = useUserStore()
 
 /* Modal Open or Close State */
 const visibleStaticBackdropDemo = ref(false)
@@ -68,7 +72,7 @@ const validateResponses = () => {
         isValid = false
       }
       question.subpreguntas?.forEach(sub_question => {
-        if (!formData.value[`sub_${sub_question.id_subpregunta}`]) {
+        if (!formData.value[`sub_${sub_question.id_subpregunta}_${question.id_pregunta}`]) {
           isValid = false
         }
       })
@@ -77,11 +81,72 @@ const validateResponses = () => {
   return isValid
 }
 
-const saveResponses = () => {
+const saveResponses = async () => {
   if (!validateResponses()) {
     alert('Please fill out all questions before submitting.')
     return
   }
+
+  const payload = {
+    paciente_id: props.patientId,
+    user_created_id: userStore.id,
+    protocolo_id: props.patientProtocol,
+    sedes_toma_muestras_id: 1,
+    detalle: parseJsonToModel(formData.value)
+  }
+  console.log(payload)
+
+  try {
+
+    const response = await PatientSurveyService.createSurveyInfoByProtocol(payload)
+
+    console.log(response.data.data)
+
+  } catch (error) {
+    console.error(error)
+  }
+
+}
+
+function parseJsonToModel(data) {
+  const result = [];
+
+  for (const key in data) {
+    if (key.startsWith("sub_")) {
+      // Procesar las variables de subpreguntas
+      const [, subId, preguntaId] = key.split("_").map(Number);
+      const preguntaExistente = result.find(
+          (item) => item.pregunta_id === preguntaId
+      );
+
+      const subPregunta = {
+        subpregunta_id: subId,
+        respuesta:
+            typeof data[key] === "object" ? data[key].DescripcionComercial || data[key].value : data[key],
+      };
+
+      if (preguntaExistente) {
+        if (!preguntaExistente.respuesta_subpreguntas) {
+          preguntaExistente.respuesta_subpreguntas = [];
+        }
+        preguntaExistente.respuesta_subpreguntas.push(subPregunta);
+      } else {
+        result.push({
+          pregunta_id: preguntaId,
+          respuesta: data[preguntaId.toString()],
+          respuesta_subpreguntas: [subPregunta],
+        });
+      }
+    } else if (!isNaN(Number(key))) {
+      // Procesar las preguntas normales
+      result.push({
+        pregunta_id: Number(key),
+        respuesta: data[key],
+      });
+    }
+  }
+
+  return result;
 }
 
 /*const getSurveyInfoByProtocol = async (protocolID: number) => {
@@ -233,7 +298,7 @@ onMounted(() => {
                             <CFormInput
                                 v-if="sub_question.tipo_pregunta === 'INPUT'"
                                 :id="`sub_question-`+sub_question.id_subpregunta"
-                                v-model="formData[`sub_${sub_question.id_subpregunta}`]"
+                                v-model="formData[`sub_${sub_question.id_subpregunta}_${question.id_pregunta}`]"
                                 :type="getInputType(sub_question, true)"
                                 :class="inputClass(sub_question)"
                                 :placeholder="getPlaceholder(sub_question, true)"
@@ -249,7 +314,7 @@ onMounted(() => {
                                 :label="getFileJSON(sub_question.propriedadesSubPregunta) === 'drugList' ? 'DescripcionComercial' : 'value'"
                                 searchable
                                 :track-by="getFileJSON(sub_question.propriedadesSubPregunta) === 'drugList' ? 'DescripcionComercial' : 'value'"
-                                v-model="formData[`sub_${sub_question.id_subpregunta}`]"
+                                v-model="formData[`sub_${sub_question.id_subpregunta}_${question.id_pregunta}`]"
                             />
                           </CCol>
 
