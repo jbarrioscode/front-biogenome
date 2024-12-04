@@ -10,7 +10,7 @@ import {CCard, CCardBody} from "@coreui/vue/dist/esm/components/card";
   <CContainer xl>
 
     <CRow>
-      <CCol md="8">
+      <CCol md="12">
         <CRow>
           <CCol md="12" class="mb-3">
             <CCard>
@@ -35,9 +35,9 @@ import {CCard, CCardBody} from "@coreui/vue/dist/esm/components/card";
           </CCol>
         </CRow>
       </CCol>
-      <CCol md="4">
+<!--      <CCol md="4">
         <ShelfAssignmentLocationComponent />
-      </CCol>
+      </CCol>-->
     </CRow>
 
   </CContainer>
