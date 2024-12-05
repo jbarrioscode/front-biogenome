@@ -14,7 +14,7 @@ const appConfig = reactive({
   <CFooter class="px-4">
     <div>
       <a href="#" target="_blank">Platform</a>
-      <span class="ms-1">&copy; {{ new Date().getFullYear() }} {{ appConfig.app_name }} - V.{{ appConfig.app_version }} de {{ appConfig.app_version_date }}</span>
+      <span class="ms-1">&copy; {{ new Date().getFullYear() }} - V.{{ appConfig.app_version }} de {{ appConfig.app_version_date }}</span>
     </div>
     <div class="ms-auto">
       <span class="me-1">Powered by</span>

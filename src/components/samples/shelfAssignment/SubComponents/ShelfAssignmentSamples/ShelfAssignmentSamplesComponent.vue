@@ -8,32 +8,71 @@ import Swal from 'sweetalert2'
 import {CListGroup, CListGroupItem} from "@coreui/vue/dist/esm/components/list-group";
 import {CBadge} from "@coreui/vue/dist/esm/components/badge";
 import {CButton} from "@coreui/vue/dist/esm/components/button";
+import SampleTypeService from "@/services/sampleTypes/SampleType.service.ts";
+import {useUserStore} from "@/stores/authentication/userStore.ts";
+import {CSpinner} from "@coreui/vue/dist/esm/components/spinner";
 
-const formData = reactive({
-  sampleCode: ''
-})
-const tempBoxSponsor = ref([]);
+/* Importing Stores */
+const userStore = useUserStore()
 
-const listGroupData = ref([
-  {
-    sampleCode: 'MU5-FKHMMPLT-1-7',
-  },
-  {
-    sampleCode: 'MU6-1RUJFAWI-1-7',
-  },
-  {
-    sampleCode: 'MU7-GFGUGF4-1-7',
-  }
-])
+const sampleCode = ref("")
+const listGroupData = ref([])
+const isSavingData = ref(false);
 
 /* Expresiones regulares de validaciones*/
-const regexSamples = /^MU([0-9]{1,9})?-\w{1,20}-\d{1,5}-\d{1,5}$/
+const isValidCode = (code: string) => {
+  const regex = /^[a-z0-9]{1,9}-\d{1,2}-sa$/i;
+  return regex.test(code);
+}
+
+// Función para validar duplicados
+function isDuplicateSample(codigo: string): boolean {
+  return listGroupData.value.some((sample) => sample.codigo_muestra === codigo);
+}
+
+const addSampleToTempArray = () => {
+
+  const sample_code = sampleCode.value.toUpperCase();
+
+  if (!sampleCode.value.length) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Verifica!',
+      text: 'El campo de Muestras o de Ubicación No puede estar vacío'
+    })
+    return
+  }
+
+  if (!isValidCode(sample_code)) {
+    Swal.fire({
+      icon: "warning",
+      title: "Error!",
+      text: 'La muestra no cumple con el patron Requerido' + '\n' + 'CODIGO_MUESTRA - SEDE - SA'
+    })
+    return
+  }
+
+  if (isDuplicateSample(sample_code)) {
+    Swal.fire(
+        "Duplicado",
+        `El código de muestra "${sample_code}" ya existe.`,
+        "warning"
+    );
+    return;
+  }
+
+  listGroupData.value.push({
+    codigo_muestra: sampleCode.value.toUpperCase() || "N/A",
+  })
+  clearFields()
+
+}
 
 const shelfSampleAssignment = () => {
   //CM5-FKHMMPLT-1-7
   //CM6-1RUJFAWI-1-7
 
-  if (!formData.sampleCode.length) {
+  if (!sampleCode.value.length) {
     Swal.fire({
       icon: 'error',
       title: 'Verifica!',
@@ -42,7 +81,7 @@ const shelfSampleAssignment = () => {
     return false
   }
 
-  if (!regexSamples.test(formData.sampleCode)) {
+  if (!isValidCode(sampleCode.value)) {
     Swal.fire({
       icon: 'error',
       title: 'Ooops!',
@@ -50,8 +89,56 @@ const shelfSampleAssignment = () => {
     })
     return false
   } else {
-    listGroupData.value.push({...formData})
+    listGroupData.value.push({
+      codigo_muestra: sampleCode.value,
+    })
   }
+}
+
+const assignSampleToShelf = async () => {
+
+  isSavingData.value = true;
+
+  try {
+
+    const payload = {
+      envios: {...listGroupData.value},
+      user_id: userStore.id,
+    }
+    const response = await SampleTypeService.saveInternationalSamples(payload)
+
+    if (response.data.statusCode !== 201) {
+      await Swal.fire({
+        icon: "error",
+        title: "Oooops!",
+        text: response.data.message,
+      })
+      return
+    }
+
+    await Swal.fire({
+      icon: "success",
+      title: response.data.message,
+    })
+    clearFields()
+    clearDataArray()
+
+  } catch (error) {
+    await Swal.fire({
+      icon: "error",
+      title: error.message,
+    })
+    console.error("Error al asginar las ubicaciones:", error)
+  } finally {
+    isSavingData.value = false
+  }
+}
+
+function clearFields() {
+  sampleCode.value = ''
+}
+function clearDataArray() {
+  listGroupData.value = []
 }
 
 function removeItemFromArray(index: number) {
@@ -72,14 +159,26 @@ function removeItemFromArray(index: number) {
               <CCol>
                 <CForm class="row g-3" autocomplete="off">
 
-                  <CCol>
+                  <CCol md="9">
                     <CFormLabel for="inputSampleCode">Código de la MUESTRA:</CFormLabel>
                     <CFormInput
                         placeholder="Escriba acá el código de la MUESTRA"
                         id="inputSampleCode"
-                        v-model="formData.sampleCode"
+                        v-model="sampleCode"
                         @keyup.enter.prevent="shelfSampleAssignment"
                     />
+                  </CCol>
+
+                  <CCol md="3" class="d-flex justify-content-center align-items-center">
+                    <CButton
+                        color="primary"
+                        shape="rounded-pill"
+                        :disabled="!sampleCode"
+                        @click.prevent="addSampleToTempArray"
+                    >
+                      <font-awesome-icon :icon="['fas', 'paper-plane']" />
+                      PRECARGAR Muestra
+                    </CButton>
                   </CCol>
 
                 </CForm>
@@ -91,15 +190,17 @@ function removeItemFromArray(index: number) {
       </CCol>
     </CRow>
 
-    <CRow class="mb-3">
+    <CRow class="mb-3" v-if="listGroupData.length">
       <CCol class="text-end">
         <CButton
             color="success"
             shape="rounded-pill"
-            :disabled="!listGroupData.length"
+            :disabled="!listGroupData.length || isSavingData"
+            @click.prevent="assignSampleToShelf"
         >
-          <font-awesome-icon :icon="['fas', 'paper-plane']" />
-          Enviar a Esponsor
+          <CSpinner as="span" size="sm" aria-hidden="true" v-if="isSavingData"/>
+          <font-awesome-icon :icon="['fas', 'paper-plane']" v-else />
+          {{ isSavingData ? 'Enviando Muestras...' : 'Enviar al Esponsor' }}
         </CButton>
       </CCol>
     </CRow>
@@ -112,7 +213,7 @@ function removeItemFromArray(index: number) {
               v-for="(item, index) in listGroupData"
               :key="index"
           >
-            {{ item.sampleCode }}
+            {{ item.codigo_muestra }}
             <CButton
                 size="sm"
                 color="danger"

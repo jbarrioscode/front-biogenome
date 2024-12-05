@@ -11,7 +11,7 @@ import {CButton} from "@coreui/vue/dist/esm/components/button";
     <CCard class="p-4">
       <CCardBody>
         <CForm>
-          <h1>Biogenome</h1>
+          <h1>Platform</h1>
           <p class="text-body-secondary">Solicitud de cambio de contraseña</p>
           <CInputGroup class="mb-3">
             <CInputGroupText>

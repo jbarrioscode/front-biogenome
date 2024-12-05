@@ -10,7 +10,7 @@ import {CCard, CCardBody} from "@coreui/vue/dist/esm/components/card";
   <CContainer xl>
 
     <CRow>
-      <CCol md="8">
+      <CCol md="12">
         <CRow>
           <CCol md="12" class="mb-3">
             <CCard>
@@ -18,12 +18,12 @@ import {CCard, CCardBody} from "@coreui/vue/dist/esm/components/card";
                 <ul class="nav nav-pills">
                   <li class="nav-item">
                     <RouterLink class="nav-link" :to="{name: 'shelf-assignment-samples'}">
-                      MUESTRAS
+                      ENVÍOS AL EXTERIOR
                     </RouterLink>
                   </li>
                   <li class="nav-item">
                     <RouterLink class="nav-link" :to="{name: 'shelf-assignment-counter-samples'}">
-                      CONTRAS MUESTRAS
+                      ASIGNACIÓN BIOBANCO
                     </RouterLink>
                   </li>
                 </ul>
@@ -35,9 +35,9 @@ import {CCard, CCardBody} from "@coreui/vue/dist/esm/components/card";
           </CCol>
         </CRow>
       </CCol>
-      <CCol md="4">
+<!--      <CCol md="4">
         <ShelfAssignmentLocationComponent />
-      </CCol>
+      </CCol>-->
     </CRow>
 
   </CContainer>
