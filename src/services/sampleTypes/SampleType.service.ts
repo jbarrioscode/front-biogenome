@@ -12,6 +12,9 @@ export default {
     },
     saveCounterSamplesLocationInBioBank(payload) {
         return api.post(`/api/v1/muestra/post/asignar-muestras-estante`, payload)
+    },
+    saveInternationalSamples(payload) {
+        return api.post(`/api/v1/muestra/post/asignar-muestras-exterior`, payload)
     }
 
 }

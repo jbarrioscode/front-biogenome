@@ -3,19 +3,22 @@
 import {CCard, CCardBody} from "@coreui/vue/dist/esm/components/card";
 import {CCol, CRow} from "@coreui/vue/dist/esm/components/grid";
 import {CForm, CFormInput, CFormLabel, CFormSelect} from "@coreui/vue/dist/esm/components/form";
-import {onMounted, reactive, ref} from "vue";
+import {onMounted, ref} from "vue";
 import Swal from 'sweetalert2'
 import {CListGroup, CListGroupItem} from "@coreui/vue/dist/esm/components/list-group";
 import {CButton} from "@coreui/vue/dist/esm/components/button";
 import {useBioBankLocationStore} from "@/stores/sampleType/biobankLocationStore.ts";
 import {useUserStore} from "@/stores/authentication/userStore.ts";
 import SampleTypeService from "@/services/sampleTypes/SampleType.service.ts";
+import {CSpinner} from "@coreui/vue/dist/esm/components/spinner";
 
 /* Importing Stores */
 const userStore = useUserStore()
 const bioBankStore = useBioBankLocationStore()
 
 const counterSampleCode = ref("")
+const listGroupData = ref([])
+const isSavingData = ref(false);
 
 // Estado reactivo para los selects
 const locations = ref([])
@@ -24,7 +27,6 @@ const selectedShelf = ref("");
 const selectedBox = ref("");
 const shelves = ref([]);
 const boxes = ref([]);
-const listGroupData = ref([])
 
 /*const listGroupData = ref([
   {
@@ -58,13 +60,30 @@ const handleShelfChange = () => {
 };
 
 const isValidCode = (code: string) => {
-  const regex = /^[A-Z0-9]{1,9}-\d{1,2}-CS$/;
+  //const regex = /^[A-Z0-9]{1,9}-\d{1,2}-CS$/;
+  const regex = /^[a-z0-9]{1,9}-\d{1,2}-cs$/i;
   return regex.test(code);
+}
+
+// Función para validar duplicados
+function isDuplicateSample(codigo: string): boolean {
+  return listGroupData.value.some((sample) => sample.codigo_muestra === codigo);
 }
 
 const addSampleToTempArray = () => {
 
-  if (!isValidCode(counterSampleCode.value)) {
+  const sample_code = counterSampleCode.value.toUpperCase();
+
+  if (isDuplicateSample(sample_code)) {
+    Swal.fire(
+        "Duplicado",
+        `El código de muestra "${sample_code}" ya existe.`,
+        "warning"
+    );
+    return;
+  }
+
+  if (!isValidCode(sample_code)) {
     Swal.fire({
       icon: "warning",
       title: "Error!",
@@ -82,25 +101,42 @@ const addSampleToTempArray = () => {
     return
   }
 
+  const sample_location_name = boxes.value.find((loc) => loc.id === selectedBox.value)
+
   listGroupData.value.push({
-    codigo_muestra: counterSampleCode.value,
-    user_id: userStore.id,
+    codigo_muestra: counterSampleCode.value.toUpperCase(),
     ubicacion_id: selectedBox.value,
+    sample_location: sample_location_name?.descripcion || "N/A"
   })
 }
 
 const assignSampleToShelf = async () => {
+
+  isSavingData.value = true;
+
   try {
 
     const payload = {
-      ...listGroupData.value,
+      asignaciones: {...listGroupData.value},
+      user_id: userStore.id,
     }
     const response = await SampleTypeService.saveCounterSamplesLocationInBioBank(payload)
+
+    if (response.data.statusCode !== 201) {
+      await Swal.fire({
+        icon: "error",
+        title: "Oooops!",
+        text: response.data.message,
+      })
+      return
+    }
 
     await Swal.fire({
       icon: "success",
       title: response.data.message,
     })
+    clearFields()
+    clearDataArray()
 
   } catch (error) {
     await Swal.fire({
@@ -108,11 +144,21 @@ const assignSampleToShelf = async () => {
       title: error.message,
     })
     console.error("Error al asginar las ubicaciones:", error)
+  } finally {
+    isSavingData.value = false
   }
 }
 
 function clearFields() {
   counterSampleCode.value = ''
+  selectedLocation.value = ""
+  selectedShelf.value = ""
+  selectedBox.value = ""
+  shelves.value = []
+  boxes.value = []
+}
+function clearDataArray() {
+  listGroupData.value = []
 }
 
 function removeItemFromArray(index: number) {
@@ -237,12 +283,13 @@ onMounted(() => {
           <CButton
               color="success"
               shape="rounded-pill"
-              :disabled="!listGroupData.length"
+              :disabled="!listGroupData.length || isSavingData"
               size="sm"
               @click.prevent="assignSampleToShelf"
           >
-            <font-awesome-icon :icon="['fas', 'floppy-disk']"/>
-            Asignar CONTRAMUESTRAS a Ubicaciones
+            <CSpinner as="span" size="sm" aria-hidden="true" v-if="isSavingData"/>
+            <font-awesome-icon :icon="['fas', 'floppy-disk']" v-else />
+            {{ isSavingData ? 'Asignando Ubicaciones...' : 'Asignar CONTRAMUESTRAS a Ubicaciones' }}
           </CButton>
         </CCol>
       </CRow>
@@ -262,7 +309,18 @@ onMounted(() => {
                 v-else
             >
               <div>
+                <strong>
+                  Código:
+                </strong>
                 {{ item.codigo_muestra }}
+                <ul>
+                  <li>
+                    <strong>
+                      Ubicación:
+                    </strong>
+                    {{item.sample_location}}
+                  </li>
+                </ul>
               </div>
               <CButton
                   size="sm"
