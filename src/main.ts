@@ -49,6 +49,9 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 
+/** HighCharts **/
+import HighchartsVue from 'highcharts-vue'
+
 
 const app = createApp(App)
 app.use(pinia)
@@ -56,6 +59,10 @@ app.use(router)
 app.use(CoreuiVue)
 app.use(VueSweetalert2)
 app.use(Vue3Signature)
+app.use(HighchartsVue, {
+    tagName: 'charts',
+})
+
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.component('table-lite', VueTableLite)
 app.component('pulse-loader', PulseLoader)

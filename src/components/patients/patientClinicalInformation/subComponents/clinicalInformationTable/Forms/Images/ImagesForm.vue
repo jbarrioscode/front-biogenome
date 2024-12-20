@@ -10,6 +10,7 @@ import PatientClinicalInformationService from "@/services/patients/PatientClinic
 import {useUserStore} from "@/stores/authentication/userStore.ts";
 import {transformToUpperCase} from "@/utils/helpers/transformFormToUpperCase.ts";
 import {CCard, CCardBody, CCardHeader} from "@coreui/vue/dist/esm/components/card";
+import {CImage} from "@coreui/vue/dist/esm/components/image";
 
 const Swal = inject('$swal')
 
@@ -28,6 +29,30 @@ const formData = reactive({
 })
 const imagesHistory = ref([])
 const isSavingData = ref(false)
+const fileName = ref(""); // Nombre del archivo seleccionado
+const errorMessage = ref(""); // Mensaje de error
+
+// Función que maneja la carga del archivo
+const handleFileUpload = (event) => {
+  const file = event.target.files[0];
+
+  if (file) {
+    const validFormats = ["application/pdf", "image/png", "image/jpeg"];
+    errorMessage.value = ""; // Limpia el mensaje de error anterior
+
+    // Valida el tipo de archivo
+    if (validFormats.includes(file.type)) {
+      fileName.value = file.name // Guarda el nombre del archivo
+      errorMessage.value = "" // Limpia errores previos
+    } else {
+      fileName.value = "" // Resetea el nombre del archivo
+      errorMessage.value =
+          "Formato de archivo no válido. Solo se permiten PDF, PNG o JPG."
+      // Limpia el input para evitar enviar el archivo inválido
+      event.target.value = ""
+    }
+  }
+}
 
 function addItemToArray() {
   imagesHistory.value.push({
@@ -127,6 +152,27 @@ function clearArray() {
           />
         </CCol>
 
+        <CCol md="12" class="mb-3">
+          <CFormLabel for="formFile">Cargue acá el ARCHIVO (PDF, PNG, JPG)</CFormLabel>
+          <CFormInput
+              type="file"
+              id="formFile"
+              accept=".pdf, .png, .jpg, .jpeg"
+              @change="handleFileUpload"
+          />
+        </CCol>
+
+        <CCol md="12" class="mb-3">
+          <p>{{fileName}}</p>
+          <CImage
+              rounded
+              thumbnail
+              src="@/assets/vue.svg"
+              width="200"
+              height="200"
+          />
+        </CCol>
+
         <CCol md="12">
           <div class="d-grid gap-2 d-md-flex justify-content-md-start">
             <CButton shape="rounded-pill" color="warning" class="me-md-2" type="reset">
@@ -156,7 +202,7 @@ function clearArray() {
               shape="rounded-pill"
               :disabled="isSavingData || !imagesHistory.length"
           >
-            <font-awesome-icon :icon="['fas', 'floppy-disk']" />
+            <font-awesome-icon :icon="['fas', 'floppy-disk']"/>
             {{ isSavingData ? 'Guardando Imagenes' : 'Guardar Imagenes' }}
           </CButton>
         </CCol>
