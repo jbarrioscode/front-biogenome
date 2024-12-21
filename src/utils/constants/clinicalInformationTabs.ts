@@ -65,10 +65,9 @@ export const clinicalInformationTabs = [
         status: true,
         children: []
     },
-    /*{
+    {
         name: 'Anexos',
         value: 13,
         status: true,
-        children: []
-    },*/
+    },
 ]

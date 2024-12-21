@@ -152,26 +152,26 @@ function clearArray() {
           />
         </CCol>
 
-        <CCol md="12" class="mb-3">
-          <CFormLabel for="formFile">Cargue acá el ARCHIVO (PDF, PNG, JPG)</CFormLabel>
-          <CFormInput
-              type="file"
-              id="formFile"
-              accept=".pdf, .png, .jpg, .jpeg"
-              @change="handleFileUpload"
-          />
-        </CCol>
+        <!--                <CCol md="12" class="mb-3">
+                  <CFormLabel for="formFile">Cargue acá el ARCHIVO (PDF, PNG, JPG)</CFormLabel>
+                  <CFormInput
+                      type="file"
+                      id="formFile"
+                      accept=".pdf, .png, .jpg, .jpeg"
+                      @change="handleFileUpload"
+                  />
+                </CCol>
 
-        <CCol md="12" class="mb-3">
-          <p>{{fileName}}</p>
-          <CImage
-              rounded
-              thumbnail
-              src="@/assets/vue.svg"
-              width="200"
-              height="200"
-          />
-        </CCol>
+                <CCol md="12" class="mb-3">
+                  <p>{{fileName}}</p>
+                  <CImage
+                      rounded
+                      thumbnail
+                      src="@/assets/vue.svg"
+                      width="200"
+                      height="200"
+                  />
+                </CCol>-->
 
         <CCol md="12">
           <div class="d-grid gap-2 d-md-flex justify-content-md-start">
