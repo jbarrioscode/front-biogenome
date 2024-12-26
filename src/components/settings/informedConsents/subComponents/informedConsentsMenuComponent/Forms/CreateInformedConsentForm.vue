@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {inject, reactive, ref} from "vue";
+import { reactive, ref} from "vue";
 import {useProtocolStore} from "@/stores/protocols/protocolStore.ts";
 import {useUserStore} from "@/stores/authentication/userStore.ts";
 import {IInformedConsent} from "@/utils/interfaces/informedConsent/informedConsent.ts";
@@ -8,8 +8,6 @@ import {CForm, CFormInput, CFormLabel, CFormSelect, CFormTextarea} from "@coreui
 import {CCol, CRow} from "@coreui/vue/dist/esm/components/grid";
 import {CButton} from "@coreui/vue/dist/esm/components/button";
 import {CSpinner} from "@coreui/vue/dist/esm/components/spinner";
-
-import Swal from 'sweetalert2'
 
 const userStore = useUserStore()
 const protocolStore = useProtocolStore()

@@ -44,7 +44,7 @@ const savePatient = async () => {
     }
 
     const res = await PatientService.createPatient(payload)
-    swal.fire({
+    Swal.fire({
       icon: 'success',
       text: res.data.message,
       title: "Buen Trabajo!",
@@ -52,7 +52,7 @@ const savePatient = async () => {
     await patientStore.fetchPatientsList()
 
   } catch (error) {
-    swal.fire({
+    Swal.fire({
       icon: 'error',
       text: error.response.message,
     })
