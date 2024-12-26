@@ -11,8 +11,8 @@ import {useHeadquartersStore} from "@/stores/settings/headquarters.store.ts";
 import {useCountryStore} from "@/stores/geography/country.store.ts";
 import VueSelect from "vue3-select-component";
 import StateService from "@/services/geography/state.service.ts";
+import Swal from 'sweetalert2'
 
-const Swal = inject('$swal')
 const headquartersStore = useHeadquartersStore()
 const countriesStore = useCountryStore()
 

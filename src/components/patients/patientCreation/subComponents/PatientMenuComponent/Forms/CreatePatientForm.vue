@@ -9,7 +9,7 @@ import {CButton} from "@coreui/vue/dist/esm/components/button";
 import PatientService from "@/services/patients/Patient.service.ts";
 import {usePatientStore} from "@/stores/patients/patientStore.ts";
 
-const swal = inject('$swal')
+import Swal from 'sweetalert2'
 
 const patientStore = usePatientStore()
 const documentTypesStore = useDocumentTypesStore()

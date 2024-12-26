@@ -8,7 +8,7 @@ import {CCol, CRow} from "@coreui/vue/dist/esm/components/grid";
 import PermissionService from "@/services/settings/Permission.service.ts";
 import {usePermissionStore} from "@/stores/settings/permissionStore.ts";
 
-const Swal = inject('$swal')
+import Swal from 'sweetalert2'
 
 const permissionStore = usePermissionStore()
 const visibleStaticBackdropDemo = ref(false)

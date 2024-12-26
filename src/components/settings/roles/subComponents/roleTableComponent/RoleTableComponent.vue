@@ -5,10 +5,8 @@ import {inject, onMounted, reactive} from "vue";
 import {CButton} from "@coreui/vue/dist/esm/components/button";
 import {CBadge} from "@coreui/vue/dist/esm/components/badge";
 import RoleService from "@/services/settings/Role.service.ts";
-
+import Swal from 'sweetalert2'
 const roleStore = useRoleStore()
-
-const Swal = inject('$swal')
 
 // Init Your table settings
 const table = reactive({

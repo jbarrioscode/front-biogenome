@@ -7,7 +7,7 @@ import PermissionService from "@/services/settings/Permission.service.ts";
 import EditPermissionButton
   from "@/components/settings/permissions/subComponents/permissionTableComponent/Modals/EditPermissionButton.vue";
 
-const Swal = inject('$swal')
+import Swal from 'sweetalert2'
 const permissionStore = usePermissionStore()
 
 // Init Your table settings

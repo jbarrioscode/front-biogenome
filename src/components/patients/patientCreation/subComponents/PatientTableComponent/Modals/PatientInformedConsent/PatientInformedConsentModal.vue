@@ -13,7 +13,7 @@ import DOMPurify from "dompurify";
 import {CForm, CFormInput, CFormLabel, CFormSelect} from "@coreui/vue/dist/esm/components/form";
 import {useDocumentTypesStore} from "@/stores/settings/documentTypesStore.ts";
 
-const Swal = inject('$swal')
+import Swal from 'sweetalert2'
 
 const props = defineProps({
   patientId: {
