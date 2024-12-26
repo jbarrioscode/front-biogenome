@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 
 import {onBeforeMount, onMounted, reactive, ref} from "vue";
 import {CCol, CContainer, CRow} from "@coreui/vue/dist/esm/components/grid";

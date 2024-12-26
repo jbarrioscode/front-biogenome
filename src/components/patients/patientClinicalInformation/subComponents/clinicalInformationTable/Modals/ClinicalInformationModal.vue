@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 
 import {CButton} from "@coreui/vue/dist/esm/components/button";
 import {CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle} from "@coreui/vue/dist/esm/components/modal";
@@ -25,8 +25,7 @@ import PatientClinicalInformationService from "@/services/patients/PatientClinic
 import {CSpinner} from "@coreui/vue/dist/esm/components/spinner";
 import AttachesForm
   from "@/components/patients/patientClinicalInformation/subComponents/clinicalInformationTable/Forms/Attaches/AttachesForm.vue";
-
-const Swal = inject('$swal')
+import Swal from 'sweetalert2'
 
 /* Defining Props */
 const props = defineProps({

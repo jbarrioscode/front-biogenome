@@ -8,6 +8,7 @@
     "moduleResolution": "Node",
     "allowImportingTsExtensions": true,
     "allowSyntheticDefaultImports": true,
+    "noEmit": true, // Agrega esta línea
     "types": [
       "vue-sweetalert2"
     ]

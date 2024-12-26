@@ -8,8 +8,7 @@ import {CButton} from "@coreui/vue/dist/esm/components/button";
 import {CCard, CCardBody, CCardHeader} from "@coreui/vue/dist/esm/components/card";
 import {useUserStore} from "@/stores/authentication/userStore.ts";
 import PatientClinicalInformationService from "@/services/patients/PatientClinicalInformation.service.ts";
-
-const Swal = inject('$swal')
+import Swal from 'sweetalert2'
 
 const userStore = useUserStore()
 const props = defineProps({

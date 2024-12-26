@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 
 import {useSidebarStore} from "@/stores/globals/sidebarStore.ts";
 import {
