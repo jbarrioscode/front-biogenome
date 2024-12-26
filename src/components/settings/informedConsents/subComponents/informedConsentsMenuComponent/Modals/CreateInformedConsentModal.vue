@@ -2,7 +2,6 @@
 import {ref} from "vue";
 import {CModal, CModalBody, CModalHeader, CModalTitle} from "@coreui/vue/dist/esm/components/modal";
 import {CButton} from "@coreui/vue/dist/esm/components/button";
-import CreateRoleForm from "@/components/settings/roles/subComponents/roleMenuComponent/Forms/CreateRoleForm.vue";
 import CreateInformedConsentForm
   from "@/components/settings/informedConsents/subComponents/informedConsentsMenuComponent/Forms/CreateInformedConsentForm.vue";
 
