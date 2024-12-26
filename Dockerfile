@@ -24,5 +24,5 @@ EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 
 #sudo docker builder prune -a
-#sudo docker build -t vueapp .
-#sudo docker run -d -p 5173:80 vueapp
+#sudo docker build -t vueapp:[version] .
+#sudo docker run -d -p 5173:80 vueapp:[version]
