@@ -10,7 +10,7 @@ import FollowUpService from "@/services/followUp/FollowUp.service";
 import {CCard, CCardBody, CCardHeader, CCardText} from "@coreui/vue/dist/esm/components/card";
 import dayjs from "dayjs";
 
-const Swal = inject('$swal');
+import Swal from 'sweetalert2'
 
 /* Defining Props */
 const props = defineProps({

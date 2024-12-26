@@ -9,7 +9,7 @@ import {CCol, CRow} from "@coreui/vue/dist/esm/components/grid";
 import {CButton} from "@coreui/vue/dist/esm/components/button";
 import {CSpinner} from "@coreui/vue/dist/esm/components/spinner";
 
-const Swal = inject('$swal')
+import Swal from 'sweetalert2'
 
 const userStore = useUserStore()
 const protocolStore = useProtocolStore()

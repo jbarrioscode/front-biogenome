@@ -10,7 +10,7 @@ import UsersService from "@/services/settings/Users.service.ts";
 import {useUsersStore} from "@/stores/settings/usersStore.ts";
 import {CSpinner} from "@coreui/vue/dist/esm/components/spinner";
 
-const Swal = inject('$swal')
+import Swal from 'sweetalert2'
 
 const usersStore = useUsersStore()
 const documentTypesStore = useDocumentTypesStore()

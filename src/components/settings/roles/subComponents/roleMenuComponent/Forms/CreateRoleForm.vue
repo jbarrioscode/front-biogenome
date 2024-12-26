@@ -8,7 +8,7 @@ import {CSpinner} from "@coreui/vue/dist/esm/components/spinner";
 import {useRoleStore} from "@/stores/settings/roleStore.ts";
 import {usePermissionStore} from "@/stores/settings/permissionStore.ts";
 
-const Swal = inject('$swal')
+import Swal from 'sweetalert2'
 
 const roleStore = useRoleStore()
 const permissionStore = usePermissionStore()
