@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 
 import {useSidebarStore} from "@/stores/globals/sidebarStore.ts";
 import {
@@ -18,7 +18,7 @@ const sidebar = useSidebarStore()
 
 const router = useRouter()
 
-function redirectToViews(view) {
+function redirectToViews(view: string) {
   router.push({
     name: `${view}`
   })
