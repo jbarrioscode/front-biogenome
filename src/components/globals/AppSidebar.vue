@@ -8,7 +8,7 @@ import {
   CSidebarNav,
   CSidebarToggler
 } from "@coreui/vue/dist/esm/components/sidebar";
-import {logo} from '@/assets/brand/logo.ts'
+import biogenome_logo from '@/assets/brand/biogenome_logo.svg'
 import {sygnet} from '@/assets/brand/sygnet.ts'
 import {CCloseButton} from "@coreui/vue/dist/esm/components/close-button";
 import {CNavGroup, CNavItem, CNavTitle} from "@coreui/vue/dist/esm/components/nav";
@@ -41,7 +41,7 @@ function redirectToViews(view: string) {
     <CSidebarHeader style="background: #252f56 !important;">
       <RouterLink to="/" v-slot="{href, navigate}">
         <CSidebarBrand v-bind="$attrs" as="a" :href="href" @click="navigate">
-          <CIcon custom-class-name="sidebar-brand-full" :icon="logo" :height="32"/>
+          <CIcon custom-class-name="sidebar-brand-full" class="text-white" :icon="biogenome_logo" :height="32"/>
           <CIcon custom-class-name="sidebar-brand-narrow" :icon="sygnet" :height="32"/>
         </CSidebarBrand>
       </RouterLink>

@@ -23,6 +23,8 @@ import HormonalLaboratoriesForm
 import {useUserStore} from "@/stores/authentication/userStore.ts";
 import PatientClinicalInformationService from "@/services/patients/PatientClinicalInformation.service.ts";
 import {CSpinner} from "@coreui/vue/dist/esm/components/spinner";
+import AttachesForm
+  from "@/components/patients/patientClinicalInformation/subComponents/clinicalInformationTable/Forms/Attaches/AttachesForm.vue";
 
 const Swal = inject('$swal')
 
@@ -159,9 +161,9 @@ async function closePatientClinicalInformation() {
             <CTabPane role="tabpanel" aria-labelledby="images-tab" :visible="tabPanePillsActiveKey === 12">
               <ImagesForm :sampleID="sampleID" />
             </CTabPane>
-<!--            <CTabPane role="tabpanel" aria-labelledby="pathological-tab" :visible="tabPanePillsActiveKey === 13">
-              <p>Anexos</p>
-            </CTabPane>-->
+            <CTabPane role="tabpanel" aria-labelledby="attachments-tab" :visible="tabPanePillsActiveKey === 13">
+              <AttachesForm :sampleID="sampleID" :sampleCode="props.patientCode" />
+            </CTabPane>
 
           </CTabContent>
         </CCol>
@@ -175,6 +177,7 @@ async function closePatientClinicalInformation() {
           <CCol class="d-flex justify-content-end align-items-center">
             <CButton
                 color="primary"
+                size="sm"
                 shape="rounded-pill"
                 @click.prevent="closePatientClinicalInformation"
                 :disabled="isClosingClinicalInformation"

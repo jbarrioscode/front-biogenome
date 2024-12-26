@@ -23,6 +23,7 @@
     "axios": "^1.7.7",
     "dayjs": "^1.11.13",
     "dompurify": "^3.2.1",
+    "highcharts-vue": "^2.0.1",
     "path": "^0.12.7",
     "pinia": "^2.2.4",
     "simplebar-vue": "^2.3.5",

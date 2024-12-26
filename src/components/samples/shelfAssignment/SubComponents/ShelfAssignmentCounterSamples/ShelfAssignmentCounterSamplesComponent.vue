@@ -11,6 +11,7 @@ import {useBioBankLocationStore} from "@/stores/sampleType/biobankLocationStore.
 import {useUserStore} from "@/stores/authentication/userStore.ts";
 import SampleTypeService from "@/services/sampleTypes/SampleType.service.ts";
 import {CSpinner} from "@coreui/vue/dist/esm/components/spinner";
+import * as XLSX from "xlsx";
 
 /* Importing Stores */
 const userStore = useUserStore()
@@ -25,23 +26,20 @@ const locations = ref([])
 const selectedLocation = ref("");
 const selectedShelf = ref("");
 const selectedBox = ref("");
+const selectedPosition = ref("");
 const shelves = ref([]);
 const boxes = ref([]);
+const positions = ref([]);
+const isLoadingReport = ref(false)
+const dataReport = ref([])
 
-/*const listGroupData = ref([
-  {
-    counterSampleCode: 'CM5-FKHMMPLT-1-7',
-    shelfAssignmentCode: "ES-1",
-  },
-  {
-    counterSampleCode: 'CM6-1RUJFAWI-1-7',
-    shelfAssignmentCode: "ES-1",
-  },
-  {
-    counterSampleCode: 'CM7-GFGUGF4-1-7',
-    shelfAssignmentCode: "ES-2",
-  }
-])*/
+const exportToExcel = () => {
+  let data = XLSX.utils.json_to_sheet(dataReport.value)
+  const workbook = XLSX.utils.book_new()
+  const filename = 'ubicacionesUtilizadas'
+  XLSX.utils.book_append_sheet(workbook, data, filename)
+  XLSX.writeFile(workbook, `${filename}.xlsx`)
+}
 
 // Función para manejar el cambio en el selector de ubicación
 const handleLocationChange = () => {
@@ -55,9 +53,15 @@ const handleLocationChange = () => {
 // Función para manejar el cambio en el selector de estante
 const handleShelfChange = () => {
   const shelf = shelves.value.find((shelf) => shelf.id === selectedShelf.value);
-  boxes.value = shelf?.cajas || [];
+  boxes.value = shelf?.caja || [];
   selectedBox.value = "";
 };
+
+const handleBoxChange = () => {
+  const box = boxes.value.find((box) => box.descripcion === selectedBox.value);
+  positions.value = box?.ubicaciones || [];
+  selectedPosition.value = "";
+}
 
 const isValidCode = (code: string) => {
   //const regex = /^[A-Z0-9]{1,9}-\d{1,2}-CS$/;
@@ -69,15 +73,27 @@ const isValidCode = (code: string) => {
 function isDuplicateSample(codigo: string): boolean {
   return listGroupData.value.some((sample) => sample.codigo_muestra === codigo);
 }
+function isDuplicatePosition(id_position: number): boolean {
+  return listGroupData.value.some((sample) => sample.ubicacion_id === id_position);
+}
 
 const addSampleToTempArray = () => {
 
   const sample_code = counterSampleCode.value.toUpperCase();
+  const id_position = parseInt(selectedPosition.value);
 
   if (isDuplicateSample(sample_code)) {
     Swal.fire(
         "Duplicado",
         `El código de muestra "${sample_code}" ya existe.`,
+        "warning"
+    );
+    return;
+  }
+  if (isDuplicatePosition(id_position)) {
+    Swal.fire(
+        "Duplicado",
+        `La posición ya ha sido tomada por alguna CONTRAMUESTRA`,
         "warning"
     );
     return;
@@ -101,13 +117,16 @@ const addSampleToTempArray = () => {
     return
   }
 
-  const sample_location_name = boxes.value.find((loc) => loc.id === selectedBox.value)
+  const sample_location_name = positions.value.find((loc) => loc.id === selectedPosition.value)
 
   listGroupData.value.push({
-    codigo_muestra: counterSampleCode.value.toUpperCase(),
-    ubicacion_id: selectedBox.value,
-    sample_location: sample_location_name?.descripcion || "N/A"
+    codigo_muestra: counterSampleCode.value.toUpperCase().trim(),
+    ubicacion_id: selectedPosition.value,
+    sample_location: sample_location_name.fila+''+sample_location_name.columna || "N/A"
   })
+
+  clearFieldsAfterArrayInsertion()
+
 }
 
 const assignSampleToShelf = async () => {
@@ -135,6 +154,7 @@ const assignSampleToShelf = async () => {
       icon: "success",
       title: response.data.message,
     })
+    await getBioBankLocations()
     clearFields()
     clearDataArray()
 
@@ -149,13 +169,20 @@ const assignSampleToShelf = async () => {
   }
 }
 
+function clearFieldsAfterArrayInsertion() {
+  counterSampleCode.value = ""
+}
+
 function clearFields() {
-  counterSampleCode.value = ''
+  counterSampleCode.value = ""
   selectedLocation.value = ""
   selectedShelf.value = ""
   selectedBox.value = ""
+  selectedPosition.value = ""
+  locations.value = []
   shelves.value = []
   boxes.value = []
+  positions.value = []
 }
 function clearDataArray() {
   listGroupData.value = []
@@ -174,6 +201,33 @@ const getBioBankLocations = async () => {
   }
 }
 
+const downloadUsedPositionsReport = async () => {
+  isLoadingReport.value = true
+  try {
+    const response = await SampleTypeService.downloadUsedPositionsReport()
+    if (response.data.statusCode !== 200) {
+      await Swal.fire({
+        icon: "warning",
+        title: "Error!",
+        text: response.data.message,
+      })
+    }
+
+    dataReport.value = response.data.data
+    exportToExcel()
+    await Swal.fire({
+      icon: "success",
+      title: "Reporte Generado!",
+      text: response.data.message,
+    })
+
+  } catch (error) {
+    console.error("Error al ejecutar el REPORTE de Ubicaciones:");
+  } finally {
+    isLoadingReport.value = false
+  }
+}
+
 onMounted(() => {
   getBioBankLocations()
 })
@@ -185,6 +239,30 @@ onMounted(() => {
   <CRow>
 
     <CCol md="7">
+
+      <CRow class="mb-3">
+        <CCol>
+          <CCard>
+            <CCardBody>
+              <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <CButton
+                    color="success"
+                    variant="outline"
+                    shape="rounded-pill"
+                    size="sm"
+                    @click="downloadUsedPositionsReport"
+                    :disabled="isLoadingReport"
+                >
+                  <CSpinner as="span" size="sm" aria-hidden="true" v-if="isLoadingReport"/>
+                  <font-awesome-icon :icon="['fas', 'file-arrow-down']" v-else />
+                  {{ isLoadingReport ? 'Generando Reporte...' : 'Reporte Ubicaciones Ocupadas' }}
+                </CButton>
+              </div>
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </CRow>
+
       <CRow class="mb-3">
         <CCol>
           <CCard>
@@ -203,7 +281,9 @@ onMounted(() => {
                   </CCol>
                 </CRow>
 
-                <CRow :class="`${ !selectedLocation && !selectedShelf && !selectedBox ? 'mb-4' : 'mb-2'}`">
+                <CRow
+                    :class="`${ !selectedLocation || !selectedShelf || !selectedBox ? 'mb-4' : 'mb-2'}`"
+                >
                   <CCol>
                     <label class="form-label" for="location-select">Ubicación:</label>
                     <select class="form-select" id="location-select" v-model="selectedLocation"
@@ -218,9 +298,9 @@ onMounted(() => {
 
                 <CRow class="mb-2" v-if="shelves.length">
                   <CCol>
-                    <label class="form-label" for="shelf-select">Estante:</label>
+                    <label class="form-label" for="shelf-select">Nevera:</label>
                     <select class="form-select" id="shelf-select" v-model="selectedShelf" @change="handleShelfChange">
-                      <option value="">Selecciona un estante</option>
+                      <option value="">Selecciona la nevera</option>
                       <option v-for="shelf in shelves" :key="shelf.id" :value="shelf.id">
                         {{ shelf.nombre }}
                       </option>
@@ -228,13 +308,29 @@ onMounted(() => {
                   </CCol>
                 </CRow>
 
-                <CRow :class="`${ selectedLocation && selectedShelf && selectedBox ? 'mb-4' : 'mb-2'}`" v-if="boxes.length">
+                <CRow :class="`${ selectedLocation && selectedShelf && selectedBox ? 'mb-4' : 'mb-2'}`"
+                      v-if="boxes.length"
+                >
                   <CCol>
                     <label class="form-label" for="box-select">Caja:</label>
-                    <select class="form-select" id="box-select" v-model="selectedBox">
-                      <option value="" disabled>Selecciona una caja</option>
-                      <option v-for="box in boxes" :key="box.id" :value="box.id">
+                    <select class="form-select" id="box-select" v-model="selectedBox" @change="handleBoxChange">
+                      <option value="">Selecciona una caja</option>
+                      <option v-for="box in boxes" :key="box.id" :value="box.descripcion">
                         {{ box.descripcion }}
+                      </option>
+                    </select>
+                  </CCol>
+                </CRow>
+
+                <CRow :class="`${ selectedLocation && selectedShelf && selectedBox ? 'mb-4' : 'mb-2'}`"
+                      v-if="positions.length"
+                >
+                  <CCol>
+                    <label class="form-label" for="box-select">Posición:</label>
+                    <select class="form-select" id="box-select" v-model="selectedPosition">
+                      <option value="">Selecciona una caja</option>
+                      <option v-for="position in positions" :key="position.id" :value="position.id">
+                        {{ position.fila + '' + position.columna }}
                       </option>
                     </select>
                   </CCol>
@@ -247,7 +343,7 @@ onMounted(() => {
                           size="sm"
                           color="warning"
                           shape="rounded-pill"
-                          type="reset"
+                          @click="clearFields"
                       >
                         <font-awesome-icon :icon="['fas', 'times']" />
                         Limpiar

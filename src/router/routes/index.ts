@@ -4,10 +4,7 @@ import Login from "@/components/authentication/Login.vue";
 import ResetPassword from "@/components/authentication/ResetPassword.vue";
 import NotFoundPage from "@/views/errors/NOTFOUND/NotFoundPage.vue";
 import UnauthorizedPage from "@/views/errors/UNAUTHORIZED/UnauthorizedPage.vue";
-import PatientMainComponent from "@/components/patients/PatientMainComponent.vue";
 import ReportsMainComponent from "@/components/reports/ReportsMainComponent.vue";
-import SamplesMainComponent from "@/components/samples/SamplesMainComponent.vue";
-import SettingsMainComponent from "@/components/settings/SettingsMainComponent.vue";
 import UsersMainComponent from "@/components/settings/users/UsersMainComponent.vue";
 import RolesMainComponent from "@/components/settings/roles/RolesMainComponent.vue";
 import PermissionsMainComponent from "@/components/settings/permissions/PermissionsMainComponent.vue";
@@ -22,12 +19,13 @@ import ShelfAssignmentSamplesComponent
     from "@/components/samples/shelfAssignment/SubComponents/ShelfAssignmentSamples/ShelfAssignmentSamplesComponent.vue";
 import ShelfAssignmentCounterSamplesComponent
     from "@/components/samples/shelfAssignment/SubComponents/ShelfAssignmentCounterSamples/ShelfAssignmentCounterSamplesComponent.vue";
+import DashboardWithGraphics from "@/components/dashboard/DashboardWithGraphics.vue";
 
 const routesObject: any = [
     {
         path: '/',
         component: DefaultLayout,
-        redirect: () =>{
+        redirect: () => {
             return {name: "auth"}
         }
     },
@@ -58,93 +56,111 @@ const routesObject: any = [
         path: '/dashboard',
         name: 'dashboard',
         component: DefaultLayout,
+        redirect: () => {
+            return {name: "statistics"};
+        },
         children: [
             {
-                path: '/patients',
-                name: 'patients',
-                component: PatientMainComponent,
-                children: [
-                    {
-                        path: '/creation',
-                        name: 'creation',
-                        component: PatientCreationMainComponent,
-                    },
-                    {
-                        path: '/clinical-information',
-                        name: 'clinical-information',
-                        component: PatientClinicalInformationMainComponent,
-                    },
-                ]
+                path: "/dashboard/statistics",
+                name: "statistics",
+                component: DashboardWithGraphics,
+            },
+        ],
+    },
+    {
+        path: '/patients',
+        name: 'patients',
+        component: DefaultLayout,
+        children: [
+            {
+                path: '/patient/creation',
+                name: 'creation',
+                component: PatientCreationMainComponent,
             },
             {
-                path: '/samples',
-                name: 'samples',
-                component: SamplesMainComponent,
+                path: '/patient/clinical-information',
+                name: 'clinical-information',
+                component: PatientClinicalInformationMainComponent,
+            },
+        ]
+    },
+    {
+        path: '/samples',
+        name: 'samples',
+        component: DefaultLayout,
+        children: [
+            {
+                path: '/samples/follow-up',
+                name: 'follow-up',
+                component: FollowUpMainComponent
+            },
+            {
+                path: '/samples/shelf-assignment',
+                name: 'shelf-assignment',
+                component: ShelfAssignmentMainComponent,
+                redirect: () => {
+                    return {name: "shelf-assignment-samples"}
+                },
                 children: [
                     {
-                        path: '/samples/follow-up',
-                        name: 'follow-up',
-                        component: FollowUpMainComponent
+                        path: '/samples/shelf-assignment/samples',
+                        name: 'shelf-assignment-samples',
+                        component: ShelfAssignmentSamplesComponent
                     },
                     {
-                        path: '/samples/shelf-assignment',
-                        name: 'shelf-assignment',
-                        component: ShelfAssignmentMainComponent,
-                        redirect: () =>{
-                            return {name: "shelf-assignment-samples"}
-                        },
-                        children: [
-                            {
-                                path: '/samples/shelf-assignment/samples',
-                                name: 'shelf-assignment-samples',
-                                component: ShelfAssignmentSamplesComponent
-                            },
-                            {
-                                path: '/samples/shelf-assignment/counter-samples',
-                                name: 'shelf-assignment-counter-samples',
-                                component: ShelfAssignmentCounterSamplesComponent
-                            }
-                        ]
+                        path: '/samples/shelf-assignment/counter-samples',
+                        name: 'shelf-assignment-counter-samples',
+                        component: ShelfAssignmentCounterSamplesComponent
                     }
                 ]
-            },
+            }
+        ]
+    },
+    {
+        path: '/reports',
+        name: 'reports',
+        component: DefaultLayout,
+        redirect: () => {
+            return {name: "report_1"}
+        },
+        children: [
             {
-                path: '/reports',
-                name: 'reports',
+                path: '/reports/report_1',
+                name: 'report_1',
                 component: ReportsMainComponent,
             },
+        ]
+    },
+    {
+        path: '/settings',
+        name: 'settings',
+        component: DefaultLayout,
+        children: [
             {
-                path: '/settings',
-                name: 'settings',
-                component: SettingsMainComponent,
-                children: [
-                    {
-                        path: '/users',
-                        name: 'users',
-                        component: UsersMainComponent,
-                    },
-                    {
-                        path: '/roles',
-                        name: 'roles',
-                        component: RolesMainComponent,
-                    },
-                    {
-                        path: '/permissions',
-                        name: 'permissions',
-                        component: PermissionsMainComponent,
-                    },
-                    {
-                        path: '/headquarters',
-                        name: 'headquarters',
-                        component: HeadquartersMainComponent,
-                    },
-                    {
-                        path: '/informed-consents',
-                        name: 'informed-consents',
-                        component: InformedConsentsMainComponent,
-                    }
-                ]
+                path: '/settings/users',
+                name: 'users',
+                component: UsersMainComponent,
             },
+            {
+                path: '/settings/roles',
+                name: 'roles',
+                component: RolesMainComponent,
+            },
+            {
+                path: '/settings/permissions',
+                name: 'permissions',
+                component: PermissionsMainComponent,
+            },
+            {
+                path: '/settings/headquarters',
+                name: 'headquarters',
+                component: HeadquartersMainComponent,
+            },
+            {
+                path: '/settings/informed-consents',
+                name: 'informed-consents',
+                component: InformedConsentsMainComponent,
+            }
         ]
     },
     {
@@ -158,4 +174,5 @@ const routesObject: any = [
         component: NotFoundPage,
     },
 ]
+
 export default routesObject
