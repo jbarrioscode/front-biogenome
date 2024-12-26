@@ -18,7 +18,7 @@ const sidebar = useSidebarStore()
 
 const router = useRouter()
 
-function redirectToViews(view: string) {
+function redirectToViews(view) {
   router.push({
     name: `${view}`
   })
