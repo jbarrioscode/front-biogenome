@@ -10,9 +10,7 @@ import PatientClinicalInformationService from "@/services/patients/PatientClinic
 import {useUserStore} from "@/stores/authentication/userStore.ts";
 import {transformToUpperCase} from "@/utils/helpers/transformFormToUpperCase.ts";
 import {CCard, CCardBody, CCardHeader} from "@coreui/vue/dist/esm/components/card";
-import {CImage} from "@coreui/vue/dist/esm/components/image";
-
-const Swal = inject('$swal')
+import Swal from 'sweetalert2'
 
 const userStore = useUserStore()
 const props = defineProps({

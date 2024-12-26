@@ -9,8 +9,7 @@ import {CCard, CCardBody, CCardHeader, CCardTitle} from "@coreui/vue/dist/esm/co
 import {useUserStore} from "@/stores/authentication/userStore.ts";
 import {hematologicalLabsOptions} from "@/utils/constants/hematologicalLabsOptions.ts";
 import PatientClinicalInformationService from "@/services/patients/PatientClinicalInformation.service.ts";
-
-const Swal = inject('$swal')
+import Swal from 'sweetalert2'
 
 const userStore = useUserStore()
 const props = defineProps({

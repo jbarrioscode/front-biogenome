@@ -10,8 +10,8 @@ import {useUserStore} from "@/stores/authentication/userStore.ts";
 import PatientClinicalInformationService from "@/services/patients/PatientClinicalInformation.service.ts";
 import dayjs from "dayjs";
 import {CListGroup, CListGroupItem} from "@coreui/vue/dist/esm/components/list-group";
+import Swal from 'sweetalert2'
 
-const Swal = inject('$swal')
 const today = dayjs()
 
 const userStore = useUserStore()
